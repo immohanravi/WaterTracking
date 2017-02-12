@@ -119,6 +119,9 @@ public class updateStock extends AppCompatActivity {
         Log.i("check",String.valueOf(updated));
         if(updated != true){
             Toast.makeText(getApplicationContext(),"nothing to update",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(getApplicationContext(),"Successfully updated",Toast.LENGTH_SHORT).show();
+
         }
     }
     public void deleteRow(){

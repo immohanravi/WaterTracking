@@ -86,6 +86,10 @@ public class addStock extends AppCompatActivity {
             db = stock.getWritableDatabase();
             try {
                 db.execSQL("INSERT INTO stock(date, number_of_cans, price) VALUES('" + sdate + "'," + inCans + "," + inPrice + ")");
+                Toast.makeText(getApplicationContext(),"Successfully added!",Toast.LENGTH_SHORT).show();
+                dateField.setText("");
+                cans.setText("");
+                price.setText("");
 
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
