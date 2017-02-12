@@ -1,0 +1,102 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".tab1">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/top">
+
+        <TextView
+            android:text="1200"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3"
+
+            android:textSize="23dp"
+            android:layout_marginLeft="49dp"
+            android:textColor="#ff00ff"
+            android:layout_marginStart="49dp"
+            android:layout_gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/stockavailable"
+            android:layout_toEndOf="@+id/stockavailable" />
+
+        <TextView
+            android:text="Available Stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stockavailable"
+
+            android:textSize="23dp"
+
+            android:textColor="#ff00ff"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:id="@+id/textView"
+            android:textSize="23dp"
+            android:textColor="#ff00ff"
+            android:paddingLeft="0dp"
+            android:layout_alignBaseline="@+id/textView3"
+            android:layout_alignBottom="@+id/textView3"
+            android:layout_centerHorizontal="true" />
+        <SearchView
+
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:id="@+id/search"
+            android:layout_below="@+id/textView"
+            android:queryHint="Search From Database"
+            android:layout_marginTop="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/spinner3"
+            android:layout_width="200dp"
+            android:layout_toLeftOf="@+id/spinner3" />
+
+        <Spinner
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner3"
+            android:layout_marginTop="12dp"
+            android:layout_alignTop="@+id/search"
+            android:entries="@array/stock_array"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+
+        </Spinner>
+    </RelativeLayout>
+
+
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/top"
+            android:id="@+id/listView"
+            android:listSelector="@drawable/list_selector"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+
+
+    </RelativeLayout>
+
+</FrameLayout>
