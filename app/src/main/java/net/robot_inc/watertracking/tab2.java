@@ -3,19 +3,26 @@ package net.robot_inc.watertracking;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Spinner;
 
 import net.robot_inc.watertracking.R;
+
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -27,19 +34,29 @@ public class tab2 extends Fragment {
     Button loadImage;
     ImageView iv;
     private static int RESULT_LOAD_IMAGE = 1;
-    public tab2() {
-        // Required empty public constructor
-    }
+    SQLiteDatabase SQLITEDATABASE;
+    customerDbHelper SQLITEHELPER;
+    Spinner spinner3;
+    Cursor cursor;
+    customerDbAdapter ListAdapter ;
+    ListView listView;
+    ArrayList<String> ID_ArrayList = new ArrayList<String>();
+    ArrayList<String> Name_ArrayList = new ArrayList<String>();
+    ArrayList<String> Number_ArrayList = new ArrayList<String>();
+    ArrayList<byte[]> Image_ArrayList = new ArrayList<byte[]>();
+    ArrayList<String> Address_ArrayList = new ArrayList<String>();
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.i("tab2","called");
         View view = inflater.inflate(R.layout.fragment_tab2,container,false);
+        /*
         iv = (ImageView) view.findViewById(R.id.imageView2);
-        loadImage = (Button) view.findViewById(R.id.button2);
-        loadImage.setOnClickListener(new View.OnClickListener() {
+        iv = (ImageView) view.findViewById(R.id.imageView2);
+        iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(
@@ -49,8 +66,20 @@ public class tab2 extends Fragment {
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
+        */
+        listView = (ListView) view.findViewById(R.id.customer_list);
+        listView.setTextFilterEnabled(true);
+        SQLITEHELPER = new customerDbHelper(getActivity());
+        ShowSQLiteDBdata();
+
         return view;
 
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ShowSQLiteDBdata();
 
     }
     @Override
@@ -75,6 +104,50 @@ public class tab2 extends Fragment {
         }
 
 
+    }
+
+    private void ShowSQLiteDBdata() {
+        Log.i("is next",String.valueOf("called"));
+        SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+
+
+        cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers", null);
+
+
+        ID_ArrayList.clear();
+        Name_ArrayList.clear();
+        Number_ArrayList.clear();
+        Address_ArrayList.clear();
+        Image_ArrayList.clear();
+        Log.i("is next",String.valueOf(cursor.moveToFirst()));
+        if (cursor.moveToFirst()) {
+            do {
+                    ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)));
+
+                    Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+
+                    Address_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
+
+                    Number_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
+
+                    Image_ArrayList.add(cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
+
+            } while (cursor.moveToNext());
+        }
+
+        ListAdapter = new customerDbAdapter(getActivity(),
+
+                ID_ArrayList,
+                Name_ArrayList,
+                Address_ArrayList,
+                Number_ArrayList,
+                Image_ArrayList
+
+        );
+
+        listView.setAdapter(ListAdapter);
+
+        cursor.close();
     }
 
 }

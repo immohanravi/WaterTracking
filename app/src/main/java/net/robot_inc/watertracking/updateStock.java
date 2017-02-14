@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.ExpandedMenuView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +24,7 @@ public class updateStock extends AppCompatActivity {
     EditText dateField, price,cans;
     Calendar myCalendar;
     SQLiteDatabase db;
-    SqlStock stock;
+    stockHellper stock;
     Bundle values;
     int year;
     int month;
@@ -43,7 +42,7 @@ public class updateStock extends AppCompatActivity {
         getSupportActionBar().setTitle("Update Stock");
         values  = getIntent().getExtras();
         myCalendar = Calendar.getInstance();
-        stock = new SqlStock(getApplicationContext());
+        stock = new stockHellper(getApplicationContext());
         dateField = (EditText) findViewById(R.id.date);
         price = (EditText) findViewById(R.id.price);
         cans = (EditText) findViewById(R.id.cans);

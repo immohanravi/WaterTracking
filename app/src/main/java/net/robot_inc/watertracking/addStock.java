@@ -1,38 +1,29 @@
 package net.robot_inc.watertracking;
 
-import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.database.sqlite.SQLiteDatabase;
-import android.icu.text.SimpleDateFormat;
+
 import java.util.*;
 
-import android.icu.util.*;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.Locale;
-
-import static android.R.attr.startYear;
 
 public class addStock extends AppCompatActivity {
     EditText dateField, price,cans;
     Calendar myCalendar;
     SQLiteDatabase db;
-    SqlStock stock;
+    stockHellper stock;
     int year;
     int month;
     int date;
@@ -50,7 +41,7 @@ public class addStock extends AppCompatActivity {
 
         myCalendar = Calendar.getInstance();
         add = (Button) findViewById(R.id.add);
-        stock = new SqlStock(getApplicationContext());
+        stock = new stockHellper(getApplicationContext());
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

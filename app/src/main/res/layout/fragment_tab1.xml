@@ -90,7 +90,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/top"
             android:id="@+id/listView"
-            android:listSelector="@drawable/list_selector"
+            android:listSelector="@drawable/customer_item_selector"
             android:layout_marginTop="20dp"
             android:layout_centerHorizontal="true"
             android:layout_alignParentLeft="true"

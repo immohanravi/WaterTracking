@@ -70,6 +70,8 @@ public class stockAdapter extends BaseAdapter implements Filterable{
 
     @Override
     public View getView(int position, View child, ViewGroup parent) {
+
+
         Holder holder;
 
         LayoutInflater layoutInflater;

@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,7 +29,7 @@ public class tab1 extends Fragment {
     int stockAvilable = 0;
     SearchView searchView;
     SQLiteDatabase SQLITEDATABASE;
-    SqlStock SQLITEHELPER;
+    stockHellper SQLITEHELPER;
     Spinner spinner3;
     Cursor cursor;
     stockAdapter ListAdapter ;
@@ -94,7 +92,7 @@ public class tab1 extends Fragment {
 
             }
         });
-        SQLITEHELPER = new SqlStock(getActivity());
+        SQLITEHELPER = new stockHellper(getActivity());
         stock = (TextView) view.findViewById(R.id.textView3);
         availableStock = (TextView) view.findViewById(R.id.stockavailable);
         availableStock.setOnClickListener(new View.OnClickListener() {
@@ -148,13 +146,13 @@ public class tab1 extends Fragment {
 
         if (cursor.moveToFirst()) {
             do {
-                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_ID)));
+                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_ID)));
 
-                DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Date)));
+                DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Date)));
 
-                NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Number_Of_Cans)));
+                NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Number_Of_Cans)));
 
-                PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Price)));
+                PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Price)));
 
             } while (cursor.moveToNext());
         }
@@ -206,13 +204,13 @@ public class tab1 extends Fragment {
 
             if (cursor.moveToFirst()) {
                 do {
-                    ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_ID)));
+                    ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_ID)));
 
-                    DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Date)));
+                    DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Date)));
 
-                    NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Number_Of_Cans)));
+                    NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Number_Of_Cans)));
 
-                    PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Price)));
+                    PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Price)));
 
                 } while (cursor.moveToNext());
             }
@@ -265,8 +263,6 @@ public class tab1 extends Fragment {
         return "0";
     }
 
-    public void updateDatabase(String id,String date,String number_of_cans, String price){
 
-    }
 
 }

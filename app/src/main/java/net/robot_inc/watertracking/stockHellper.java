@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Mohan on 2/4/2017.
  */
 
-public class SqlStock extends SQLiteOpenHelper {
+public class stockHellper extends SQLiteOpenHelper {
 
     static String DATABASE_NAME="WaterTracking";
-    tab1 one;
+
 
     public static final String KEY_ID="id";
 
@@ -22,7 +22,7 @@ public class SqlStock extends SQLiteOpenHelper {
     public static final String KEY_Number_Of_Cans="number_of_cans";
 
     public static final String KEY_Price="price";
-    public SqlStock(Context context) {
+    public stockHellper(Context context) {
 
         super(context, DATABASE_NAME, null, 1);
 

@@ -9,7 +9,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class stockView extends AppCompatActivity {
-    SqlStock SQLITEHELPER;
+    stockHellper SQLITEHELPER;
     SQLiteDatabase SQLITEDATABASE;
     Cursor cursor;
     stockAdapter ListAdapter ;
@@ -26,7 +26,7 @@ public class stockView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         listView = (ListView) findViewById(R.id.listView);
 
-        SQLITEHELPER = new SqlStock(this);
+        SQLITEHELPER = new stockHellper(this);
     }
 
     @Override
@@ -50,13 +50,13 @@ public class stockView extends AppCompatActivity {
 
         if (cursor.moveToFirst()) {
             do {
-                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_ID)));
+                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_ID)));
 
-                DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Date)));
+                DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Date)));
 
-                NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Number_Of_Cans)));
+                NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Number_Of_Cans)));
 
-                PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(SqlStock.KEY_Price)));
+                PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Price)));
 
             } while (cursor.moveToNext());
         }

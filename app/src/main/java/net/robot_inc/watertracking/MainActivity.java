@@ -28,7 +28,19 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     SQLiteDatabase SQLITEDATABASE;
 
+    static String DATABASE_NAME="WaterTracking";
 
+
+    public static final String KEY_ID="id";
+
+    public static final String TABLE_NAME="customers";
+
+    public static final String KEY_Name="Name";
+
+    public static final String KEY_Address="Address";
+
+    public static final String KEY_Number="Number";
+    public static final String KEY_Image="Image";
     int stockAvailbale = 0;
 
     @Override
@@ -73,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Snackbar.make(view, "Tab2", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
+                                Intent intent = new Intent(getApplicationContext(),newCustomer.class);
+                                startActivityForResult(intent, 0);
                             }
                         });
                         break;
@@ -110,7 +122,9 @@ public class MainActivity extends AppCompatActivity {
     private void DBCreate() {
         SQLITEDATABASE = openOrCreateDatabase("WaterTracking", Context.MODE_PRIVATE,null);
         //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS stock");
-        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS stock(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATETIME NOT NULL, number_of_cans INTEGER NOT NULL, price INTEGER NOT NULL);");
+        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS stock(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATETIME NOT NULL, number_of_cans INTEGER NOT NULL, price INTEGER NOT NULL)");
+        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "+KEY_Name+" TEXT NOT NULL, "+KEY_Address+" TEXT NOT NULL, "+KEY_Number+" INTEGER NOT NULL, "+KEY_Image+" BLOB NOT NULL)");
+
         //SQLITEDATABASE.execSQL("INSERT INTO stock (number_of_cans, price) values(200,10)");
     }
 

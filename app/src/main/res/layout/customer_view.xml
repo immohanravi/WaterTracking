@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/customer_item_selector"
+    android:orientation="horizontal"
+    android:padding="5dip">
+
+    <LinearLayout
+        android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip"
+        android:padding="3dip" >
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:src="@drawable/person"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="75dip"
+        android:paddingBottom="10dip"
+        android:text="Full Name"
+        android:textColor="#040404"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="sans"/>
+
+    <TextView
+        android:id="@+id/tv_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/name"
+        android:layout_below="@id/name"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="5dip"
+        android:text="Phone Number"
+        android:textColor="#343434"
+        android:textSize="15sp" />
+
+    <TextView
+        android:text="Pending Amount : 0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_phone_number"
+        android:layout_toRightOf="@+id/tv_phone_number"
+        android:layout_toEndOf="@+id/tv_phone_number"
+        android:layout_marginLeft="36dp"
+        android:layout_marginStart="36dp"
+        android:id="@+id/amt" />
+
+    <TextView
+        android:text="Address :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Address"
+        android:layout_above="@+id/tv_phone_number"
+        android:layout_alignLeft="@+id/amt"
+        android:layout_alignStart="@+id/amt" />
+
+</RelativeLayout>
