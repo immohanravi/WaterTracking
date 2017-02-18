@@ -36,6 +36,7 @@ public class newCustomer extends AppCompatActivity {
     int RESULT_LOAD_IMAGE = 1;
     SQLiteDatabase db;
     customerDbHelper helper;
+    customerDataHelper customerdatahelper;
     Drawable defaultImg;
     Button add;
     @Override
@@ -64,6 +65,7 @@ public class newCustomer extends AppCompatActivity {
         });
         add = (Button) findViewById(R.id.btn_add);
         helper = new customerDbHelper(getApplicationContext());
+        customerdatahelper = new customerDataHelper((getApplicationContext()));
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +82,9 @@ public class newCustomer extends AppCompatActivity {
                         statement.bindLong(3,Long.parseLong(phoneField.getText().toString()));
                         statement.bindBlob(4,array);
                         statement.execute();
+                        statement.close();
+                        customerdatahelper.createCustomTables(nameField.getText().toString());
+
                     }catch (Exception e){
                         Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
@@ -121,6 +126,7 @@ public class newCustomer extends AppCompatActivity {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             yourSelectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
             array = stream.toByteArray();
+            cusImage.setImageBitmap(BitmapFactory.decodeByteArray(array,0,array.length));
 
 
         }

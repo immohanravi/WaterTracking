@@ -32,7 +32,7 @@ public class stockHellper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "+KEY_Date+" DATE, "+KEY_Number_Of_Cans+" INTEGER, "+KEY_Price+" INTEGER)";
+        String CREATE_TABLE="CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "+KEY_Date+" DATETIME, "+KEY_Number_Of_Cans+" INTEGER, "+KEY_Price+" INTEGER)";
         db.execSQL(CREATE_TABLE);
         }
 

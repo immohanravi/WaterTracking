@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     SQLiteDatabase SQLITEDATABASE;
+    SQLiteDatabase CustomerDB;
 
     static String DATABASE_NAME="WaterTracking";
 
@@ -121,10 +122,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void DBCreate() {
         SQLITEDATABASE = openOrCreateDatabase("WaterTracking", Context.MODE_PRIVATE,null);
+
+        CustomerDB = openOrCreateDatabase("customers",Context.MODE_PRIVATE,null);
+        CustomerDB.close();
         //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS stock");
         SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS stock(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATETIME NOT NULL, number_of_cans INTEGER NOT NULL, price INTEGER NOT NULL)");
+        //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
         SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "+KEY_Name+" TEXT NOT NULL, "+KEY_Address+" TEXT NOT NULL, "+KEY_Number+" INTEGER NOT NULL, "+KEY_Image+" BLOB NOT NULL)");
-
+        SQLITEDATABASE.close();
         //SQLITEDATABASE.execSQL("INSERT INTO stock (number_of_cans, price) values(200,10)");
     }
 

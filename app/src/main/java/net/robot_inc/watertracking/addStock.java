@@ -77,6 +77,7 @@ public class addStock extends AppCompatActivity {
             db = stock.getWritableDatabase();
             try {
                 db.execSQL("INSERT INTO stock(date, number_of_cans, price) VALUES('" + sdate + "'," + inCans + "," + inPrice + ")");
+                db.close();
                 Toast.makeText(getApplicationContext(),"Successfully added!",Toast.LENGTH_SHORT).show();
                 dateField.setText("");
                 cans.setText("");

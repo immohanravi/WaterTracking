@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -69,6 +70,20 @@ public class tab2 extends Fragment {
         */
         listView = (ListView) view.findViewById(R.id.customer_list);
         listView.setTextFilterEnabled(true);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               /* Bundle values = new Bundle();
+                values.putString("id",ListAdapter.getId(position));
+                values.putString("date",ListAdapter.getDate(position));
+                values.putString("number_of_cans",ListAdapter.getNo_of_cans(position));
+                values.putString("price",ListAdapter.getPrice(position));*/
+                Intent intent = new Intent(getActivity(),customerDetails.class);
+                //intent.putExtras(values);
+                startActivityForResult(intent, 0);
+
+            }
+        });
         SQLITEHELPER = new customerDbHelper(getActivity());
         ShowSQLiteDBdata();
 
