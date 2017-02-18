@@ -15,6 +15,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
         </activity>
         <activity android:name=".addStock">
             <meta-data
@@ -38,6 +40,14 @@
                 android:value="net.robot_inc.watertracking.MainActivity" />
 
         </activity>
+
+        <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyB5_m1BdYT4N56ovTLWvQYl05WjHvx0kn8" />
+
+        <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"/>
     </application>
 
 </manifest>
