@@ -39,7 +39,7 @@ public class tab2 extends Fragment {
     customerDbHelper SQLITEHELPER;
     Spinner spinner3;
     Cursor cursor;
-    customerDbAdapter ListAdapter ;
+    customerDbAdapter ListAdapter;
     ListView listView;
     ArrayList<String> ID_ArrayList = new ArrayList<String>();
     ArrayList<String> Name_ArrayList = new ArrayList<String>();
@@ -73,14 +73,15 @@ public class tab2 extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               /* Bundle values = new Bundle();
+              Bundle values = new Bundle();
                 values.putString("id",ListAdapter.getId(position));
-                values.putString("date",ListAdapter.getDate(position));
-                values.putString("number_of_cans",ListAdapter.getNo_of_cans(position));
-                values.putString("price",ListAdapter.getPrice(position));*/
+                values.putString("name",ListAdapter.getName(position));
+                values.putString("address",ListAdapter.getAddress(position));
+                values.putString("number",ListAdapter.getNumber(position));
+                values.putByteArray("image",ListAdapter.Image.get(position));
                 Intent intent = new Intent(getActivity(),customerDetails.class);
-                //intent.putExtras(values);
-                startActivityForResult(intent, 0);
+                intent.putExtras(values);
+                startActivity(intent);
 
             }
         });

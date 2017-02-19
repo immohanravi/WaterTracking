@@ -19,7 +19,7 @@ import java.util.Date;
  */
 
 public class customerDbAdapter extends BaseAdapter {
-
+    Holder holder;
     Context context;
     ArrayList<String> userID;
     ArrayList<String> Name;
