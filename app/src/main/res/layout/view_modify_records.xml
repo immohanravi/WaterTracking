@@ -18,15 +18,65 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/btnRecordAdd" />
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id = "@+id/relativeLayout1"
+        android:layout_width = "fill_parent"
+        android:layout_height = "wrap_content"
+        android:background = "@color/colorCell" >
+
+        <TextView
+            android:id="@+id/txtDate"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_weight = "1"
+            android:gravity = "center"
+            android:padding = "5dp"
+            android:text = "Date"
+            android:textColor = "#ffffff" />
+
+        <TextView
+            android:id="@+id/txtNo_of_cans"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_weight = "2"
+            android:gravity = "center"
+            android:padding = "5dp"
+            android:text = "NO of Cans"
+            android:textColor = "#ffffff"/>
+
+        <TextView
+            android:id="@+id/txtPrice"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_weight = "1.5"
+            android:gravity = "center"
+            android:padding = "5dp"
+            android:text = "Price"
+            android:textColor = "#ffffff" />
+
+        <TextView
+            android:id="@+id/txtPaid"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_weight = "1"
+            android:gravity = "center"
+            android:padding = "5dp"
+            android:text = "Price"
+            android:textColor = "#ffffff" />
+    </LinearLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/btnRecordAdd"
+        android:layout_below="@+id/relativeLayout1"
+        android:layout_marginTop="5dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:padding="5dp"
         android:orientation="vertical"
-        android:id="@+id/tablelayout">
+        android:id="@+id/tablelayout"
+        android:divider= "@null">
 
            </ListView>
 </RelativeLayout>

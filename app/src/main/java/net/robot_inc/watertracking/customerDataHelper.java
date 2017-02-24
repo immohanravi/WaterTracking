@@ -46,7 +46,7 @@ public class customerDataHelper extends SQLiteOpenHelper {
     public void createCustomTables(String TABLE_NAME) {
         this.TABLE_NAME = TABLE_NAME;
         try {
-            String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + KEY_Date + " DATETIME, " + KEY_No_of_cans + " INTEGER, " + KEY_Price + " INTEGER, " + KEY_Paid+ " INTEGER)";
+            String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + KEY_Date + " DATETIME, NOT NULL" + KEY_No_of_cans + " INTEGER, " + KEY_Price + " INTEGER, " + KEY_Paid+ " INTEGER)";
             SQLiteDatabase db = this.getWritableDatabase();
             db.execSQL(CREATE_TABLE);
             db.close();

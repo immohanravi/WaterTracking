@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by mohan on 18/2/17.
@@ -23,6 +25,9 @@ public class customerDataAdapter extends BaseAdapter {
     ArrayList<String> No_of_cans;
     ArrayList<String> Price ;
     ArrayList<String> Paid;
+    String year= "";
+    String month = "";
+    String Sdate = "";
     public customerDataAdapter(
             Context context2,
             ArrayList<String> userID,
@@ -83,8 +88,49 @@ public class customerDataAdapter extends BaseAdapter {
 
             holder = (customerDataAdapter.Holder) child.getTag();
         }
-        //getImage gImage = new getImage(Image.get(position));
-        holder.date.setText(Date.get(position));
+        String actualDate = Date.get(position);
+        Log.i("length",String.valueOf(actualDate.length()));
+
+
+        for (int a = 0;a<actualDate.length()-1;a++){
+            if (a<4){
+                year = year+actualDate.charAt(a);
+            }else if(a == 4&&actualDate.charAt(a)=='-'){
+                if(actualDate.charAt(a+2)=='-'){
+                    month = "0"+actualDate.charAt(a+1);
+                    if(a+4==actualDate.length()){
+                        Sdate = "0"+actualDate.charAt(a+3);
+
+                    }else if(a+5==actualDate.length()){
+                        Sdate = String.valueOf(actualDate.charAt(a+3))+String.valueOf(actualDate.charAt(a+4));
+
+                    }
+
+                } else if (actualDate.charAt(a + 3) == '-') {
+                    month = String.valueOf(actualDate.charAt(a+1))+String.valueOf(actualDate.charAt(a+2));
+                    if(a+5==actualDate.length()){
+                        Sdate = "0"+actualDate.charAt(a+4);
+
+                    }else if(a+6==actualDate.length()){
+                        Sdate = String.valueOf(actualDate.charAt(a+4))+String.valueOf(actualDate.charAt(a+5));
+
+                    }
+                }
+            }
+
+        }
+        Log.i("date",year+"-"+month+"-"+Sdate);
+        Calendar c = Calendar.getInstance();
+        c.set(Integer.parseInt(year),Integer.parseInt(month)-1,Integer.parseInt(Sdate));
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy");
+        java.util.Date actualdate = new Date(c.getTimeInMillis());
+        String adate = sdf.format(actualdate);
+        year = "";
+        month = "";
+        Sdate = "";
+
+
+        holder.date.setText(adate);
         holder.No_of_cans.setText(No_of_cans.get(position));
         holder.price.setText(Price.get(position));
         holder.paid.setText(Paid.get(position));
