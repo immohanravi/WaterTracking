@@ -237,6 +237,7 @@ public class tab2 extends Fragment {
 
             case R.id.viewRecords: {
                 Intent intent = new Intent(getActivity(), viewModifyRecords.class);
+                intent.putExtra("table_name",values.getString("name"));
                 startActivity(intent);
                 return true;
             }

@@ -1,52 +1,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:id = "@+id/relativeLayout1"
 android:layout_width = "fill_parent"
-android:layout_height = "wrap_content"
-android:background = "@color/colorCell" >
+android:layout_height = "wrap_content">
 
 <TextView
     android:id="@+id/viewDate"
     android:layout_width = "0dp"
     android:layout_height = "match_parent"
-    android:layout_weight = "1"
+    android:layout_weight = "1.8"
     android:background = "@drawable/cell_shape"
     android:ellipsize = "end"
     android:padding = "5dp"
     android:text = "Date"
-    android:singleLine = "true" />
+
+    android:textColor="@color/colorPrimaryDark"
+    android:maxLines="1"/>
 
 <TextView
     android:id="@+id/viewNo_of_cans"
-
-    android:layout_width = "0dp"
-    android:layout_height = "match_parent"
-    android:layout_weight = "2"
-    android:background = "@drawable/cell_shape"
-    android:ellipsize = "end"
-    android:padding = "5dp"
-    android:text = "No of Cans"
-    android:singleLine = "true" />
-
-<TextView
-    android:id="@+id/viewPrice"
+    android:textAlignment="center"
     android:layout_width = "0dp"
     android:layout_height = "match_parent"
     android:layout_weight = "1.5"
     android:background = "@drawable/cell_shape"
     android:ellipsize = "end"
     android:padding = "5dp"
-    android:text = "Price"
-    android:singleLine = "true" />
+    android:text = "No of Cans"
+    android:textColor="@color/colorPrimaryDark"
+    android:maxLines="1"/>
 
 <TextView
+    android:textAlignment="center"
+    android:id="@+id/viewPrice"
+    android:layout_width = "0dp"
+    android:layout_height = "match_parent"
+    android:layout_weight = "1.2"
+    android:background = "@drawable/cell_shape"
+    android:ellipsize = "end"
+    android:padding = "5dp"
+    android:text = "Price"
+    android:textColor="@color/colorPrimaryDark"
+    android:maxLines="1"/>
+
+<TextView
+    android:textAlignment="center"
     android:id="@+id/viewPaid"
     android:layout_width = "0dp"
     android:layout_height = "match_parent"
-    android:layout_weight = "1"
+    android:layout_weight = "1.2"
     android:background = "@drawable/cell_shape"
     android:ellipsize = "end"
     android:padding = "5dp"
     android:text = "Paid"
-    android:singleLine = "true" />
+    android:textColor="@color/colorPrimaryDark"
+    android:maxLines="1"/>
 </LinearLayout>
 

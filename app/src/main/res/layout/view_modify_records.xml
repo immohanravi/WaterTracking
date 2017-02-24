@@ -11,7 +11,7 @@
     tools:context="net.robot_inc.watertracking.viewModifyRecords">
 
     <Button
-        android:text="Add"
+        android:text="Add Record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

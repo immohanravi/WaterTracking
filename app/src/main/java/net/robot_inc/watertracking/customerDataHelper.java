@@ -20,11 +20,11 @@ public class customerDataHelper extends SQLiteOpenHelper {
 
     public static String TABLE_NAME="test";
 
-    public static final String KEY_Date="Name";
+    public static final String KEY_Date="Date";
 
     public static final String KEY_No_of_cans="No_of_cans";
 
-    public static final String KEY_Price="price";
+    public static final String KEY_Price="Price";
     public static final String KEY_Paid="Paid";
     public customerDataHelper(Context context) {
 

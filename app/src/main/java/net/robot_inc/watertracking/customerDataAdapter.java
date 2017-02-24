@@ -1,6 +1,7 @@
 package net.robot_inc.watertracking;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static net.robot_inc.watertracking.R.color.grey;
 
 /**
  * Created by mohan on 18/2/17.
@@ -144,6 +147,11 @@ public class customerDataAdapter extends BaseAdapter {
         }
 */
         Log.i("customer","got view");
+        if (position % 2 == 1) {
+            child.setBackgroundColor(Color.LTGRAY);
+        } else {
+            child.setBackgroundColor(Color.GRAY);
+        }
         return child;
     }
 
