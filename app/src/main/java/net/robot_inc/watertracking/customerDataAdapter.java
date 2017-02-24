@@ -1,9 +1,14 @@
 package net.robot_inc.watertracking;
 
 import android.content.Context;
+import android.media.Image;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -55,7 +60,52 @@ public class customerDataAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+    public View getView(int position, View child, ViewGroup parent) {
+        customerDataAdapter.Holder holder;
+
+        LayoutInflater layoutInflater;
+
+        if (child == null) {
+            layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            child = layoutInflater.inflate(R.layout.records_layout, null);
+
+            holder = new customerDataAdapter.Holder();
+
+
+            holder.date= (TextView) child.findViewById(R.id.viewDate);
+            holder.No_of_cans= (TextView) child.findViewById(R.id.viewNo_of_cans);
+            holder.price= (TextView) child.findViewById(R.id.viewPrice);
+            holder.paid= (TextView) child.findViewById(R.id.viewPaid);
+
+            child.setTag(holder);
+
+        } else {
+
+            holder = (customerDataAdapter.Holder) child.getTag();
+        }
+        //getImage gImage = new getImage(Image.get(position));
+        holder.date.setText(Date.get(position));
+        holder.No_of_cans.setText(No_of_cans.get(position));
+        holder.price.setText(Price.get(position));
+        holder.paid.setText(Paid.get(position));
+        /*AsyncTask<byte[], Void, Bitmap> map = gImage.execute();
+        try {
+            holder.image.setImageBitmap(map.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+*/
+        Log.i("customer","got view");
+        return child;
+    }
+
+    public class Holder {
+
+        TextView date;
+        TextView No_of_cans;
+        TextView price;
+        TextView paid;
     }
 }

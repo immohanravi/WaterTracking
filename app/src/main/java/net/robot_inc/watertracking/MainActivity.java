@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,14 +64,15 @@ public class MainActivity extends AppCompatActivity {
         });
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
-
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()){
                     case 0: {
+
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case 1: {
+
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case 2: {
+
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -123,13 +127,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void DBCreate() {
         SQLITEDATABASE = openOrCreateDatabase("WaterTracking", Context.MODE_PRIVATE,null);
-
+        //this.deleteDatabase("customers");
         CustomerDB = openOrCreateDatabase("customers",Context.MODE_PRIVATE,null);
         CustomerDB.close();
         //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS stock");
         SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS stock(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATETIME NOT NULL, number_of_cans INTEGER NOT NULL, price INTEGER NOT NULL)");
         //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
-        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "+KEY_Name+" TEXT NOT NULL, "+KEY_Address+" TEXT NOT NULL, "+KEY_Number+" INTEGER NOT NULL, "+KEY_Image+" BLOB NOT NULL)");
+        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "+KEY_Name+" TEXT NOT NULL, "+KEY_Address+" TEXT NOT NULL, "+KEY_Number+" INTEGER NOT NULL UNIQUE, "+KEY_Image+" BLOB NOT NULL)");
         SQLITEDATABASE.close();
         //SQLITEDATABASE.execSQL("INSERT INTO stock (number_of_cans, price) values(200,10)");
     }
@@ -140,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new tab2(), "Customers");
         adapter.addFragment(new tab3(), "Profit");
         viewPager.setAdapter(adapter);
+
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -189,4 +194,6 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(Item);
         }
     }
+
+
 }

@@ -50,6 +50,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.robot_inc.watertracking.MainActivity" />
         </activity>
+        <activity android:name=".viewModifyRecords">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="net.robot_inc.watertracking.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

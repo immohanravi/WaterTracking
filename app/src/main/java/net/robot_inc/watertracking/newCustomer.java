@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -47,7 +49,7 @@ public class newCustomer extends AppCompatActivity {
         //       and use variable actionBar instead
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Add Customer");
-        array = getDefaultImagebyte();
+        array = getDefaultImagebyte(R.drawable.person);
 
         nameField = (EditText) findViewById(R.id.et_name);
         phoneField = (EditText) findViewById(R.id.et_phone);
@@ -83,11 +85,33 @@ public class newCustomer extends AppCompatActivity {
                         statement.bindBlob(4,array);
                         statement.execute();
                         statement.close();
+                        db.close();
                         customerdatahelper.createCustomTables(nameField.getText().toString());
+                        nameField.setText("");
+                        phoneField.setText("");
+                        addressField.setText("");
+                        array = getDefaultImagebyte(R.drawable.person);
+                        cusImage.setImageBitmap(BitmapFactory.decodeByteArray(array,0,array.length));
+
 
                     }catch (Exception e){
-                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-                    }
+                        if(e.getMessage().toString().contains("UNIQUE")){
+
+                            db = helper.getReadableDatabase();
+                            Cursor c = db.rawQuery("SELECT * FROM customers WHERE Number = '"+phoneField.getText().toString()+"'",null);
+                            if (c.moveToFirst()){
+                                String name = c.getString(c.getColumnIndex(helper.KEY_Name));
+                                String address = c.getString(c.getColumnIndex(helper.KEY_Address));
+                                Toast.makeText(getApplicationContext(),"Phone Number Already Exist for the Customer\nName = "+name+"\nAddress = "+address,Toast.LENGTH_LONG).show();
+                            }
+                            c.close();
+
+                        }else {
+                            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+
+                        }
+
+                                            }
                 }
 
 
@@ -97,14 +121,15 @@ public class newCustomer extends AppCompatActivity {
         });
 
     }
-    public byte[] getDefaultImagebyte(){
-        defaultImg = ContextCompat.getDrawable(getApplicationContext(),R.drawable.person);
+    public byte[] getDefaultImagebyte(int id){
+        defaultImg = ContextCompat.getDrawable(getApplicationContext(),id);
         Bitmap bitmap = ((BitmapDrawable)defaultImg).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] bitmapdata = stream.toByteArray();
         return bitmapdata;
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -147,5 +172,7 @@ public class newCustomer extends AppCompatActivity {
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
+
+
 
 }

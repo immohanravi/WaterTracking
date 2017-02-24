@@ -1,7 +1,9 @@
 package net.robot_inc.watertracking;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Mohan on 2/14/2017.
@@ -25,14 +28,14 @@ public class customerDbAdapter extends BaseAdapter {
     ArrayList<String> Name;
     ArrayList<String> Address;
     ArrayList<String> Number ;
-    ArrayList<byte[]> Image;
+    ArrayList<Bitmap> Image;
     public customerDbAdapter(
             Context context2,
             ArrayList<String> id,
             ArrayList<String> Name,
             ArrayList<String> Address,
             ArrayList<String> Number,
-            ArrayList<byte[]> Image    )
+            ArrayList<Bitmap> Image    )
     {
 
         this.context = context2;
@@ -46,7 +49,7 @@ public class customerDbAdapter extends BaseAdapter {
     public String getName(int position){ return Name.get(position);}
     public String getAddress(int position){ return Address.get(position);}
     public String getNumber(int position){ return Number.get(position);}
-    public byte[] getImage(int position) { return Image.get(position);}
+    public Bitmap getImage(int position) { return Image.get(position);}
 
     @Override
     public int getCount() {
@@ -87,11 +90,20 @@ public class customerDbAdapter extends BaseAdapter {
 
             holder = (Holder) child.getTag();
         }
-
+        //getImage gImage = new getImage(Image.get(position));
         holder.name.setText(Name.get(position));
         holder.address.setText(Address.get(position));
         holder.number.setText(Number.get(position));
-        holder.image.setImageBitmap(BitmapFactory.decodeByteArray(Image.get(position),0,Image.get(position).length));
+        holder.image.setImageBitmap(Image.get(position));
+        /*AsyncTask<byte[], Void, Bitmap> map = gImage.execute();
+        try {
+            holder.image.setImageBitmap(map.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+*/
         Log.i("customer","got view");
         return child;
     }

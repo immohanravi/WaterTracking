@@ -56,5 +56,32 @@ public class customerDataHelper extends SQLiteOpenHelper {
 
         }
     }
+    public void dropTable(String TABLE_NAME) {
+        this.TABLE_NAME = TABLE_NAME;
+        try {
+            String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL(DROP_TABLE);
+            db.close();
+            Toast.makeText(context, "Successfully deleted the Table "+TABLE_NAME, Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+
+        }
+    }
+    public void alterTable(String OLD_NAME,String NEW_NAME) {
+        this.TABLE_NAME = TABLE_NAME;
+        try {
+            String DROP_TABLE = "ALTER TABLE "+OLD_NAME+" RENAME TO "+NEW_NAME;
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL(DROP_TABLE);
+            db.close();
+            Toast.makeText(context, "Successfully RENAMED Table from "+OLD_NAME+" to "+NEW_NAME, Toast.LENGTH_SHORT).show();
+
+        } catch (Exception e) {
+
+        }
+    }
+
 
 }
