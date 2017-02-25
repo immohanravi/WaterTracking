@@ -31,6 +31,7 @@ public class customerDetails extends AppCompatActivity{
     ImageView customerPhoto;
     int RESULT_LOAD_IMAGE = 1;
     byte[] array;
+    String firstLetterCaps = "";
     Bundle values;
     EditText name, address, number;
     Button update;
@@ -104,19 +105,23 @@ public class customerDetails extends AppCompatActivity{
     public void updateDatabase(){
         Log.i("update","updating database");
         Boolean updated = false;
-        if((name.getText().toString().equals(values.getString("name")) == false)){
-            String uName = name.getText().toString();
+        firstLetterCaps = name.getText().toString();
+        firstLetterCaps = firstLetterCaps.replaceFirst(String.valueOf(firstLetterCaps.charAt(0)),String.valueOf(firstLetterCaps.charAt(0)).toUpperCase());
+
+        if((firstLetterCaps.equals(values.getString("name")) == false)){
+
 
             try {
                 db = helper.getWritableDatabase();
-                db.execSQL("UPDATE customers SET Name ='"+uName+"' WHERE id='"+values.getString("id")+"'");
+                db.execSQL("UPDATE customers SET Name ='"+firstLetterCaps+"' WHERE id='"+values.getString("id")+"'");
                 customerdatahelper = new customerDataHelper(getApplicationContext());
-                customerdatahelper.alterTable(values.getString("name"),uName);
+                customerdatahelper.alterTable(values.getString("name"),firstLetterCaps.toLowerCase());
                 updated = true;
-            }catch (Exception e){
+                Log.i("update","updated Name");
+            }catch (Exception e) {
                 Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
             }
-            Log.i("update","updated Name");
+
         }
         if(address.getText().toString().equals(values.getString("address"))==false){
             String uAddress = address.getText().toString();

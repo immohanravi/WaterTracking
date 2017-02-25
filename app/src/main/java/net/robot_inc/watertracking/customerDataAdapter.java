@@ -148,9 +148,9 @@ public class customerDataAdapter extends BaseAdapter {
 */
         Log.i("customer","got view");
         if (position % 2 == 1) {
-            child.setBackgroundColor(Color.LTGRAY);
+            child.setBackgroundColor(Color.CYAN);
         } else {
-            child.setBackgroundColor(Color.GRAY);
+            child.setBackgroundColor(Color.GREEN);
         }
         return child;
     }

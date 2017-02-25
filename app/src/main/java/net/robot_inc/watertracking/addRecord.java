@@ -58,8 +58,8 @@ public class addRecord extends AppCompatActivity {
 
     private void insertData(String tdate, String tcans, String tprice, String paid) {
         int inCans = 0;
-        int inPrice = 0;
-        int inamount = 0;
+        double inPrice = 0;
+        double inamount = 0;
         String m = (String.valueOf(myCalendar.get(Calendar.MONTH)+1).length()>1) ? String.valueOf(myCalendar.get(Calendar.MONTH)+1) : "0"+String.valueOf(myCalendar.get(Calendar.MONTH)+1);
         String d = (String.valueOf(myCalendar.get(Calendar.DATE)).length()>1) ? String.valueOf(myCalendar.get(Calendar.DATE)) : "0"+String.valueOf(myCalendar.get(Calendar.DATE));
 

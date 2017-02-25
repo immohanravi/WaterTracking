@@ -94,4 +94,10 @@ public class viewModifyRecords extends AppCompatActivity {
 
         cursor.close();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ShowSQLiteDBdata();
+    }
 }

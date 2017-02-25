@@ -36,6 +36,7 @@ public class newCustomer extends AppCompatActivity {
     ImageView cusImage;
     byte[] array;
     int RESULT_LOAD_IMAGE = 1;
+    String firstLetterCaps = "";
     SQLiteDatabase db;
     customerDbHelper helper;
     customerDataHelper customerdatahelper;
@@ -65,12 +66,15 @@ public class newCustomer extends AppCompatActivity {
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
             }
         });
-        add = (Button) findViewById(R.id.btn_add);
+          add = (Button) findViewById(R.id.btn_add);
         helper = new customerDbHelper(getApplicationContext());
         customerdatahelper = new customerDataHelper((getApplicationContext()));
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                firstLetterCaps = nameField.getText().toString();
+                firstLetterCaps = firstLetterCaps.replaceFirst(String.valueOf(firstLetterCaps.charAt(0)),String.valueOf(firstLetterCaps.charAt(0)).toUpperCase());
+
                 if(TextUtils.isEmpty(nameField.getText().toString())||TextUtils.isEmpty(addressField.getText().toString())||TextUtils.isEmpty(phoneField.getText().toString())){
                     Toast.makeText(getApplicationContext(),"All fields required",Toast.LENGTH_LONG).show();
 
@@ -79,14 +83,14 @@ public class newCustomer extends AppCompatActivity {
                         Log.i("customer","inside try");
                         db = helper.getWritableDatabase();
                         SQLiteStatement statement = db.compileStatement("INSERT INTO customers(Name,Address,Number,Image) VALUES(?,?,?,?)");
-                        statement.bindString(1,nameField.getText().toString());
+                        statement.bindString(1,firstLetterCaps);
                         statement.bindString(2,addressField.getText().toString());
                         statement.bindLong(3,Long.parseLong(phoneField.getText().toString()));
                         statement.bindBlob(4,array);
                         statement.execute();
                         statement.close();
                         db.close();
-                        customerdatahelper.createCustomTables(nameField.getText().toString());
+                        customerdatahelper.createCustomTables(nameField.getText().toString().toLowerCase());
                         nameField.setText("");
                         phoneField.setText("");
                         addressField.setText("");
@@ -98,11 +102,11 @@ public class newCustomer extends AppCompatActivity {
                         if(e.getMessage().toString().contains("UNIQUE")){
 
                             db = helper.getReadableDatabase();
-                            Cursor c = db.rawQuery("SELECT * FROM customers WHERE Number = '"+phoneField.getText().toString()+"'",null);
+                            Cursor c = db.rawQuery("SELECT * FROM customers WHERE Number = '"+phoneField.getText().toString()+"' OR Name = '"+firstLetterCaps+"'",null);
                             if (c.moveToFirst()){
                                 String name = c.getString(c.getColumnIndex(helper.KEY_Name));
                                 String address = c.getString(c.getColumnIndex(helper.KEY_Address));
-                                Toast.makeText(getApplicationContext(),"Phone Number Already Exist for the Customer\nName = "+name+"\nAddress = "+address,Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),"Name or Phone Number Already Exist for the Customer\nName = "+name+"\nAddress = "+address,Toast.LENGTH_LONG).show();
                             }
                             c.close();
 

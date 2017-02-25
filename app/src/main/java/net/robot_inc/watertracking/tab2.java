@@ -237,7 +237,7 @@ public class tab2 extends Fragment {
 
             case R.id.viewRecords: {
                 Intent intent = new Intent(getActivity(), viewModifyRecords.class);
-                intent.putExtra("table_name",values.getString("name"));
+                intent.putExtra("table_name",values.getString("name").toLowerCase());
                 startActivity(intent);
                 return true;
             }
@@ -261,7 +261,7 @@ public class tab2 extends Fragment {
                     SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
                     SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='"+values.getString("id")+"'");
                     customerDataHelper = new customerDataHelper(getContext());
-                    customerDataHelper.dropTable(values.getString("name"));
+                    customerDataHelper.dropTable(values.getString("name").toLowerCase());
 
                     ShowSQLiteDBdata();
                     Toast.makeText(getContext(), "Successfully Deleted the data", Toast.LENGTH_SHORT).show();
