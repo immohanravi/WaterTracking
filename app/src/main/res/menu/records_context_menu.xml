@@ -3,12 +3,7 @@
     <item android:id="@+id/viewEdit"
         android:title="View/Edit"/>
 
-    <item android:id="@+id/viewRecords"
-        android:title="View Records"/>
-
-    <item android:id="@+id/call"
-        android:title="Call Customer"/>
 
     <item android:id="@+id/delete"
-        android:title="Delete Customer"/>
+        android:title="Delete Record"/>
 </menu>

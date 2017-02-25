@@ -55,7 +55,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.robot_inc.watertracking.MainActivity" />
         </activity>
-        <activity android:name=".addRecord"></activity>
+        <activity android:name=".addRecord" />
+        <activity android:name=".updateRecords"></activity>
     </application>
 
 </manifest>
