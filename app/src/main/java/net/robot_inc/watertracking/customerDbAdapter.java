@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -29,13 +30,15 @@ public class customerDbAdapter extends BaseAdapter {
     ArrayList<String> Address;
     ArrayList<String> Number ;
     ArrayList<Bitmap> Image;
+    HashMap<String,Integer> pendingAmount;
     public customerDbAdapter(
             Context context2,
             ArrayList<String> id,
             ArrayList<String> Name,
             ArrayList<String> Address,
             ArrayList<String> Number,
-            ArrayList<Bitmap> Image    )
+            ArrayList<Bitmap> Image,
+            HashMap<String,Integer> pendingAmount)
     {
 
         this.context = context2;
@@ -44,6 +47,7 @@ public class customerDbAdapter extends BaseAdapter {
         this.Address = Address;
         this.Number = Number;
         this.Image = Image;
+        this.pendingAmount = pendingAmount;
     }
     public String getId(int position){ return userID.get(position);}
     public String getName(int position){ return Name.get(position);}
@@ -83,6 +87,7 @@ public class customerDbAdapter extends BaseAdapter {
             holder.address= (TextView) child.findViewById(R.id.Address);
             holder.number= (TextView) child.findViewById(R.id.tv_phone_number);
             holder.image= (ImageView) child.findViewById(R.id.image);
+            holder.amt = (TextView) child.findViewById(R.id.amt);
 
             child.setTag(holder);
 
@@ -95,6 +100,9 @@ public class customerDbAdapter extends BaseAdapter {
         holder.address.setText(Address.get(position));
         holder.number.setText(Number.get(position));
         holder.image.setImageBitmap(Image.get(position));
+        holder.amt.setText(String.valueOf(pendingAmount.get(Name.get(position))));
+        Log.i("name",Name.get(position));
+
         /*AsyncTask<byte[], Void, Bitmap> map = gImage.execute();
         try {
             holder.image.setImageBitmap(map.get());
@@ -114,5 +122,6 @@ public class customerDbAdapter extends BaseAdapter {
         TextView address;
         TextView number;
         ImageView image;
+        TextView amt;
     }
 }

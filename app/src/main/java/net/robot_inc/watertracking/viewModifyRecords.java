@@ -1,13 +1,17 @@
 package net.robot_inc.watertracking;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +20,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -27,6 +32,7 @@ public class viewModifyRecords extends AppCompatActivity {
     SQLiteDatabase SQLITEDATABASE;
     customerDataHelper SQLITEHELPER;
     customerDataAdapter customerAdapter;
+
     Bundle values;
     String table_name = "";
     Cursor cursor;
@@ -55,6 +61,8 @@ public class viewModifyRecords extends AppCompatActivity {
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 values = new Bundle();
@@ -65,10 +73,16 @@ public class viewModifyRecords extends AppCompatActivity {
                 values.putString("paid",customerAdapter.getPaid(position));
                 values.putString("name",table_name);
 
+                //view.setBackgroundColor(Color.MAGENTA);
+
+
+
+
 
                 return false;
             }
         });
+
         registerForContextMenu(listView);
 
         ShowSQLiteDBdata();
@@ -120,6 +134,7 @@ public class viewModifyRecords extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         ShowSQLiteDBdata();
     }
     @Override
@@ -159,5 +174,37 @@ public class viewModifyRecords extends AppCompatActivity {
     }
 
     private void deleteRow() {
+        AlertDialog.Builder alert_box=new AlertDialog.Builder(this);
+
+        alert_box.setMessage("Are you Sure, Do want to delete the data?");
+        alert_box.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try{
+                    SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+                    SQLITEDATABASE.execSQL("DELETE FROM "+table_name+" WHERE id='"+values.getString("id")+"'");
+                    ShowSQLiteDBdata();
+                    Toast.makeText(getApplicationContext(), "Successfully Deleted the record", Toast.LENGTH_SHORT).show();
+
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+
+            }
+        });
+        alert_box.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "No Button Clicked", Toast.LENGTH_LONG).show();
+            }
+        });
+        alert_box.show();
     }
+
+
 }

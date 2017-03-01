@@ -57,36 +57,70 @@ public class addRecord extends AppCompatActivity {
     }
 
     private void insertData(String tdate, String tcans, String tprice, String paid) {
-        int inCans = 0;
-        double inPrice = 0;
-        double inamount = 0;
+        if(TextUtils.isEmpty(tcans)){
+            tcans = "0";
+        }if (TextUtils.isEmpty(tprice)){
+            tprice = "0";
+
+        }if(TextUtils.isEmpty(paid)){
+            paid = "0";
+        }
+        int inCans = Integer.parseInt(tcans);
+        double inPrice = Integer.parseInt(tprice);
+        double inamount = Integer.parseInt(paid);
         String m = (String.valueOf(myCalendar.get(Calendar.MONTH)+1).length()>1) ? String.valueOf(myCalendar.get(Calendar.MONTH)+1) : "0"+String.valueOf(myCalendar.get(Calendar.MONTH)+1);
         String d = (String.valueOf(myCalendar.get(Calendar.DATE)).length()>1) ? String.valueOf(myCalendar.get(Calendar.DATE)) : "0"+String.valueOf(myCalendar.get(Calendar.DATE));
 
         String sdate = String.valueOf(myCalendar.get(Calendar.YEAR))+"-"+m+"-"+d;
         if(TextUtils.isEmpty(tdate)){
             Toast.makeText(getApplicationContext(),"Date is Required",Toast.LENGTH_LONG).show();
+        }else if(inCans == 0){
+            if(inPrice == 0){
+                if(inamount==0){
+                    Toast.makeText(getApplicationContext(),"Nothing to add record",Toast.LENGTH_LONG).show();
+
+                }else {
+                    db = customerHelper.getWritableDatabase();
+                    try {
+                        db.execSQL("INSERT INTO "+table_name+" (Date, No_of_cans, Price, Paid) VALUES('" + sdate + "'," + inCans + "," + inPrice + ","+inamount+")");
+                        db.close();
+                        Toast.makeText(getApplicationContext(),"Successfully added!",Toast.LENGTH_SHORT).show();
+                        dateField.setText("");
+                        cans.setText("");
+                        price.setText("");
+                        amountPaid.setText("");
+
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }else {
+                Toast.makeText(getApplicationContext(),"Please check your no. of cans before entering price",Toast.LENGTH_LONG).show();
+            }
         }else {
+            if (inPrice == 0){
+                Toast.makeText(getApplicationContext(),"Pleae enter the price",Toast.LENGTH_LONG).show();
 
-            inCans = ((tcans=="") ? 0:Integer.parseInt(tcans));
-            inPrice = ((tprice=="") ? 0:Integer.parseInt(tprice));
-            inamount= ((paid=="") ? 0:Integer.parseInt(paid));
+            }else {
+                db = customerHelper.getWritableDatabase();
+                try {
+                    db.execSQL("INSERT INTO "+table_name+" (Date, No_of_cans, Price, Paid) VALUES('" + sdate + "'," + inCans + "," + inPrice + ","+inamount+")");
+                    db.close();
+                    Toast.makeText(getApplicationContext(),"Successfully added!",Toast.LENGTH_SHORT).show();
+                    dateField.setText("");
+                    cans.setText("");
+                    price.setText("");
+                    amountPaid.setText("");
 
-
-            db = customerHelper.getWritableDatabase();
-            try {
-                db.execSQL("INSERT INTO "+table_name+" (Date, No_of_cans, Price, Paid) VALUES('" + sdate + "'," + inCans + "," + inPrice + ","+inamount+")");
-                db.close();
-                Toast.makeText(getApplicationContext(),"Successfully added!",Toast.LENGTH_SHORT).show();
-                dateField.setText("");
-                cans.setText("");
-                price.setText("");
-                amountPaid.setText("");
-
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
             }
         }
+
+
+
+
     }
 
     public void showDatePickerDialog(View v) {

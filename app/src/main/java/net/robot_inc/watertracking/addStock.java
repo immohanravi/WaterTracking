@@ -36,7 +36,7 @@ public class addStock extends AppCompatActivity {
         setContentView(R.layout.add_stock);
 
         //       and use variable actionBar instead
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(false);
       getSupportActionBar().setTitle("Add Stock");
 
         myCalendar = Calendar.getInstance();

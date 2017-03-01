@@ -39,9 +39,13 @@ import android.widget.Toast;
 
 import net.robot_inc.watertracking.R;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
 import net.robot_inc.watertracking.customerDataHelper;
+
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -50,7 +54,7 @@ import static android.app.Activity.RESULT_OK;
 public class tab2 extends Fragment {
 
     Button loadImage;
-
+    HashMap<String, Integer> pendingAmount = new HashMap<>();
     Bundle values;
     Intent intent;
     long start = 0;
@@ -77,8 +81,8 @@ public class tab2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.i("tab2","called");
-        View view = inflater.inflate(R.layout.fragment_tab2,container,false);
+        Log.i("tab2", "called");
+        View view = inflater.inflate(R.layout.fragment_tab2, container, false);
         /*
         iv = (ImageView) view.findViewById(R.id.imageView2);
         iv = (ImageView) view.findViewById(R.id.imageView2);
@@ -115,11 +119,11 @@ public class tab2 extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 customerName = ListAdapter.getName(position);
                 values = new Bundle();
-                values.putString("id",ListAdapter.getId(position));
-                values.putString("name",ListAdapter.getName(position));
-                values.putString("address",ListAdapter.getAddress(position));
-                values.putString("number",ListAdapter.getNumber(position));
-                values.putByteArray("image",Image_ArrayList.get(position));
+                values.putString("id", ListAdapter.getId(position));
+                values.putString("name", ListAdapter.getName(position));
+                values.putString("address", ListAdapter.getAddress(position));
+                values.putString("number", ListAdapter.getNumber(position));
+                values.putByteArray("image", Image_ArrayList.get(position));
 
                 return false;
             }
@@ -135,6 +139,7 @@ public class tab2 extends Fragment {
 
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -143,13 +148,14 @@ public class tab2 extends Fragment {
 
 
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
             Cursor cursor = getActivity().getContentResolver().query(selectedImage,
                     filePathColumn, null, null, null);
@@ -168,7 +174,7 @@ public class tab2 extends Fragment {
     }
 
     private void ShowSQLiteDBdata() {
-        Log.i("is next",String.valueOf("called"));
+        Log.i("is next", String.valueOf("called"));
         SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
 
 
@@ -180,29 +186,31 @@ public class tab2 extends Fragment {
         Number_ArrayList.clear();
         Address_ArrayList.clear();
         Image_ArrayList.clear();
-        Log.i("is next",String.valueOf(cursor.moveToFirst()));
+        Log.i("is next", String.valueOf(cursor.moveToFirst()));
         if (cursor.moveToFirst()) {
             do {
-                    ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)));
+                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)));
 
-                    Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+                Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
 
-                    Address_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
+                Address_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
 
-                    Number_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
+                Number_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
 
-                    Image_ArrayList.add(cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
+                Image_ArrayList.add(cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
 
             } while (cursor.moveToNext());
         }
         getBitmap();
+        setPendingAmount();
         ListAdapter = new customerDbAdapter(getActivity(),
 
                 ID_ArrayList,
                 Name_ArrayList,
                 Address_ArrayList,
                 Number_ArrayList,
-                imageList
+                imageList,
+                pendingAmount
 
         );
 
@@ -210,6 +218,7 @@ public class tab2 extends Fragment {
 
         cursor.close();
     }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -218,18 +227,18 @@ public class tab2 extends Fragment {
 
 
     }
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.viewEdit: {
-                try{
+                try {
                     Intent intent = new Intent(getActivity(), customerDetails.class);
                     intent.putExtras(values);
                     startActivity(intent);
-                }catch (Exception e){
+                } catch (Exception e) {
                     Log.i("menu", e.getMessage());
                 }
-
 
 
                 return true;
@@ -237,11 +246,15 @@ public class tab2 extends Fragment {
 
             case R.id.viewRecords: {
                 Intent intent = new Intent(getActivity(), viewModifyRecords.class);
-                intent.putExtra("table_name",values.getString("name").toLowerCase());
+                intent.putExtra("table_name", values.getString("name").toLowerCase());
                 startActivity(intent);
                 return true;
             }
-
+            case R.id.call: {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + values.getString("number")));
+                startActivityForResult(callIntent, 1);
+                return true;
+            }
             case R.id.delete: {
                 deleteRow();
                 return true;
@@ -251,25 +264,25 @@ public class tab2 extends Fragment {
                 return false;
         }
     }
-    public void deleteRow(){
-        AlertDialog.Builder alert_box=new AlertDialog.Builder(getContext());
+
+    public void deleteRow() {
+        AlertDialog.Builder alert_box = new AlertDialog.Builder(getContext());
         alert_box.setMessage("Are you Sure, Do you want to Remove this customer from list?\nAll the records with be deleted.");
-        alert_box.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+        alert_box.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                try{
+                try {
                     SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
-                    SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='"+values.getString("id")+"'");
+                    SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='" + values.getString("id") + "'");
                     customerDataHelper = new customerDataHelper(getContext());
                     customerDataHelper.dropTable(values.getString("name").toLowerCase());
 
                     ShowSQLiteDBdata();
                     Toast.makeText(getContext(), "Successfully Deleted the data", Toast.LENGTH_SHORT).show();
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-
 
 
             }
@@ -284,11 +297,25 @@ public class tab2 extends Fragment {
         });
         alert_box.show();
     }
-    public void getBitmap(){
+
+    public void getBitmap() {
         imageList.clear();
-        for(byte[] imageByte : Image_ArrayList){
-            imageList.add(BitmapFactory.decodeByteArray(imageByte,0,imageByte.length));
+        for (byte[] imageByte : Image_ArrayList) {
+            imageList.add(BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length));
         }
+    }
+
+    public void setPendingAmount() {
+        try {
+            for (String name : Name_ArrayList) {
+                customerDataHelper = new customerDataHelper(getContext());
+                pendingAmount.put(name, customerDataHelper.getPendingAmount(name));
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "tab 2 \n"+e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
 }

@@ -6,6 +6,7 @@
     <color name="colorCell">#015093</color>
     <color name="grey">#a3a7ab</color>
     <color name="lightGrey">#f9fcff</color>
-
+    <color name="pressed_color">#4d90fe</color>
+    <color name="default_color">#ffffff</color>
 
 </resources>

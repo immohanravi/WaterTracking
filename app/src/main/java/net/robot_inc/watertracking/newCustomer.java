@@ -48,7 +48,7 @@ public class newCustomer extends AppCompatActivity {
         setContentView(R.layout.new_customer);
 
         //       and use variable actionBar instead
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setTitle("Add Customer");
         array = getDefaultImagebyte(R.drawable.person);
 

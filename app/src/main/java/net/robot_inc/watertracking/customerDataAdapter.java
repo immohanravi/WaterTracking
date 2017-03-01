@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -148,9 +149,9 @@ public class customerDataAdapter extends BaseAdapter {
 */
         Log.i("customer","got view");
         if (position % 2 == 1) {
-            child.setBackgroundColor(Color.CYAN);
-        } else {
             child.setBackgroundColor(Color.GREEN);
+        } else {
+            child.setBackgroundColor(Color.YELLOW);
         }
         return child;
     }

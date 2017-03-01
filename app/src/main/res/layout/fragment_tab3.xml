@@ -2,12 +2,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:ap="http://schemas.android.com/apk/res-auto"
     tools:context=".tab3">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.github.mikephil.charting.charts.BarChart
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="250dp"
+        android:id="@+id/barchart">
+
+    </com.github.mikephil.charting.charts.BarChart>
+
+
+</RelativeLayout>
+    <!-- TODO: Update blank fragment layout -->
 
 </FrameLayout>

@@ -1,10 +1,13 @@
 package net.robot_inc.watertracking;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
+
+import java.util.HashMap;
 
 /**
  * Created by mohan on 18/2/17.
@@ -84,6 +87,34 @@ public class customerDataHelper extends SQLiteOpenHelper {
         } catch (Exception e) {
 
         }
+    }
+
+    public int getPendingAmount(String table_name){
+        this.TABLE_NAME = table_name;
+        int amount = 0;
+        int paid = 0;
+        int pending = 0;
+
+        try{
+            String select = "SELECT * FROM "+TABLE_NAME;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor c = db.rawQuery(select,null);
+
+            if(c.moveToFirst()){
+                do{
+                    int cans = Integer.parseInt(c.getString(c.getColumnIndex(this.KEY_No_of_cans)));
+                    int price = Integer.parseInt(c.getString(c.getColumnIndex(this.KEY_Price)));
+                    amount = amount + (cans*price);
+                    paid = paid + Integer.parseInt(c.getString(c.getColumnIndex(this.KEY_Paid)));
+                }while (c.moveToNext());
+                pending = amount - paid;
+            }
+            c.close();
+        }catch (Exception e){
+
+        }
+
+         return pending;
     }
 
 

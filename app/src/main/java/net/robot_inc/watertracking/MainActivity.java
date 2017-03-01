@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void DBCreate() {
         SQLITEDATABASE = openOrCreateDatabase("WaterTracking", Context.MODE_PRIVATE,null);
-       // this.deleteDatabase("customers");
+        //this.deleteDatabase("customers");
         CustomerDB = openOrCreateDatabase("customers",Context.MODE_PRIVATE,null);
         CustomerDB.close();
         //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS stock");

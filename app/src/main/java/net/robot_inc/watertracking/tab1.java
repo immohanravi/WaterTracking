@@ -30,6 +30,7 @@ public class tab1 extends Fragment {
     SearchView searchView;
     SQLiteDatabase SQLITEDATABASE;
     stockHellper SQLITEHELPER;
+    customerDbHelper dh;
     Spinner spinner3;
     Cursor cursor;
     stockAdapter ListAdapter ;
@@ -93,6 +94,7 @@ public class tab1 extends Fragment {
             }
         });
         SQLITEHELPER = new stockHellper(getActivity());
+        dh = new customerDbHelper(getActivity());
         stock = (TextView) view.findViewById(R.id.textView3);
         availableStock = (TextView) view.findViewById(R.id.stockavailable);
         availableStock.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +130,11 @@ public class tab1 extends Fragment {
             }while (cursor.moveToNext());
         }
         cursor.close();
+        SQLITEDATABASE.close();
+
+
         Log.i("answer",String.valueOf(answer));
+
         return answer;
 
     }
