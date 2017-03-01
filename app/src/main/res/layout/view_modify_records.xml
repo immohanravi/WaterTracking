@@ -17,12 +17,37 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/btnRecordAdd" />
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/searchrecords"
+        android:layout_height="40dp"
+        android:hint="Search Customer"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
 
+        android:paddingLeft="5dp"
+        android:paddingRight="4dp"
+
+        android:background="@drawable/rounder_edittext"/>
+    <Button
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:paddingRight="15dp"
+        android:layout_marginRight="16dp"
+        android:id="@+id/btncancelsearch"
+        android:background="@drawable/cancel"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp" />
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id = "@+id/relativeLayout1"
         android:layout_width = "fill_parent"
         android:layout_height = "wrap_content"
-        android:background = "@color/colorCell" >
+        android:background = "@color/colorCell"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/searchrecords">
 
         <TextView
             android:id="@+id/txtDate"
@@ -61,7 +86,7 @@
             android:layout_weight = "1.2"
             android:gravity = "center"
             android:padding = "5dp"
-            android:text = "Price"
+            android:text = "Paid"
             android:textColor = "#ffffff" />
     </LinearLayout>
 

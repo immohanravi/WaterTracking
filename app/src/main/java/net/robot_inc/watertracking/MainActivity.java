@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0: {
 
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                        fab.setVisibility(View.VISIBLE);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     case 1: {
 
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                        fab.setVisibility(View.VISIBLE);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                     case 2: {
-
+                        /*
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -104,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
                                 Snackbar.make(view, "Tab3", Snackbar.LENGTH_LONG)
                                         .setAction("Action", null).show();
                             }
-                        });
+                        });*/
+                        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                        fab.setVisibility(View.GONE);
                         break;
                     }
                 }

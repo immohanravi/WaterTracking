@@ -10,94 +10,87 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/searchlayout">
 
-        android:id="@+id/top">
+        <EditText
+            android:layout_width="match_parent"
+            android:id="@+id/searchstock"
+            android:layout_height="40dp"
+            android:hint="Search Stock"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="4dp"
 
-        <TextView
-            android:text="1200"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView3"
+            android:background="@drawable/rounder_edittext"/>
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id = "@+id/relativeLayout1"
+                android:layout_width = "fill_parent"
+                android:layout_height = "wrap_content"
+                android:background = "@color/colorCell"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/searchcustomer">
 
-            android:textSize="23dp"
-            android:layout_marginLeft="49dp"
-            android:textColor="#ff00ff"
-            android:layout_marginStart="49dp"
-            android:layout_gravity="center"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/stockavailable"
-            android:layout_toEndOf="@+id/stockavailable" />
+                <TextView
+                    android:id="@+id/txtDate"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_weight = "1.3"
+                    android:gravity = "center"
+                    android:padding = "5dp"
+                    android:text = "Date"
+                    android:textColor = "#ffffff" />
 
-        <TextView
-            android:text="Available Stock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/stockavailable"
+                <TextView
+                    android:id="@+id/txtNo_of_cans"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_weight = "1"
+                    android:gravity = "center"
+                    android:padding = "5dp"
+                    android:text = "NO of Cans"
+                    android:textColor = "#ffffff"/>
 
-            android:textSize="23dp"
-
-            android:textColor="#ff00ff"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:id="@+id/textView"
-            android:textSize="23dp"
-            android:textColor="#ff00ff"
-            android:paddingLeft="0dp"
-            android:layout_alignBaseline="@+id/textView3"
-            android:layout_alignBottom="@+id/textView3"
-            android:layout_centerHorizontal="true" />
-        <SearchView
-
-            android:layout_height="wrap_content"
-            android:iconifiedByDefault="false"
-            android:focusable="false"
-            android:id="@+id/search"
-            android:layout_below="@+id/textView"
-            android:queryHint="Search From Database"
-            android:layout_marginTop="15dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/spinner3"
-            android:layout_width="200dp"
-            android:layout_toLeftOf="@+id/spinner3" />
-
-        <Spinner
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinner3"
-            android:layout_marginTop="12dp"
-            android:layout_alignTop="@+id/search"
-            android:entries="@array/stock_array"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true">
-
-        </Spinner>
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/txtPrice"
+                    android:layout_width = "0dp"
+                    android:layout_height = "wrap_content"
+                    android:layout_weight = "1"
+                    android:gravity = "center"
+                    android:padding = "5dp"
+                    android:text = "Price"
+                    android:textColor = "#ffffff" />
 
 
+            </LinearLayout>
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/top"
             android:id="@+id/listView"
-            android:listSelector="@drawable/customer_item_selector"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
             android:layout_centerHorizontal="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
-
-
+        </LinearLayout>
+        <Button
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingRight="15dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/cancelsearch"
+            android:background="@drawable/cancel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="17dp" />
     </RelativeLayout>
 
 </FrameLayout>

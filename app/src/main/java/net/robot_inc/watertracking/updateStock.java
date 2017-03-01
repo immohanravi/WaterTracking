@@ -55,19 +55,14 @@ public class updateStock extends AppCompatActivity {
 
         });
         update = (Button) findViewById(R.id.update);
-        delete = (Button) findViewById(R.id.delete);
+
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateDatabase();
             }
         });
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteRow();
-            }
-        });
+
         populateValues();
     }
     public void updateDatabase(){

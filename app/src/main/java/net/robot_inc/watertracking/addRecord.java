@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,12 +20,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class addRecord extends AppCompatActivity {
-    EditText dateField, price,cans,amountPaid;
+    EditText dateField, price, cans, amountPaid;
     Button addrecord;
     Calendar myCalendar;
     SQLiteDatabase db;
     String table_name = "";
     customerDataHelper customerHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +44,8 @@ public class addRecord extends AppCompatActivity {
         addrecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("strings",cans.getText().toString());
-                insertData(dateField.getText().toString(),cans.getText().toString(),price.getText().toString(),amountPaid.getText().toString());
+                Log.i("strings", cans.getText().toString());
+                insertData(dateField.getText().toString(), cans.getText().toString(), price.getText().toString(), amountPaid.getText().toString());
             }
 
 
@@ -55,72 +57,121 @@ public class addRecord extends AppCompatActivity {
             }
 
         });
+        cans.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int incans = 0;
+                int inprice = 0;
+                if (!TextUtils.isEmpty(String.valueOf(s))) {
+                    incans = Integer.parseInt(String.valueOf(s));
+                    if (!TextUtils.isEmpty(price.getText().toString())) {
+                        inprice = Integer.parseInt(price.getText().toString());
+                      }
+                }
+                amountPaid.setHint(String.valueOf("Payable Amount = " + incans * inprice));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                          }
+        });
+
+        price.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int incans = 0;
+                int inprice = 0;
+                if (!TextUtils.isEmpty(String.valueOf(s))) {
+                    inprice = Integer.parseInt(String.valueOf(s));
+                    if (!TextUtils.isEmpty(cans.getText().toString())) {
+                        incans = Integer.parseInt(cans.getText().toString());
+                    }
+                }
+                amountPaid.setHint(String.valueOf("Payable Amount = " + incans * inprice));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void insertData(String tdate, String tcans, String tprice, String paid) {
-        if(TextUtils.isEmpty(tcans)){
+        if (TextUtils.isEmpty(tcans)) {
             tcans = "0";
-        }if (TextUtils.isEmpty(tprice)){
+        }
+        if (TextUtils.isEmpty(tprice)) {
             tprice = "0";
 
-        }if(TextUtils.isEmpty(paid)){
+        }
+        if (TextUtils.isEmpty(paid)) {
             paid = "0";
         }
         int inCans = Integer.parseInt(tcans);
         double inPrice = Integer.parseInt(tprice);
         double inamount = Integer.parseInt(paid);
-        String m = (String.valueOf(myCalendar.get(Calendar.MONTH)+1).length()>1) ? String.valueOf(myCalendar.get(Calendar.MONTH)+1) : "0"+String.valueOf(myCalendar.get(Calendar.MONTH)+1);
-        String d = (String.valueOf(myCalendar.get(Calendar.DATE)).length()>1) ? String.valueOf(myCalendar.get(Calendar.DATE)) : "0"+String.valueOf(myCalendar.get(Calendar.DATE));
+        String m = (String.valueOf(myCalendar.get(Calendar.MONTH) + 1).length() > 1) ? String.valueOf(myCalendar.get(Calendar.MONTH) + 1) : "0" + String.valueOf(myCalendar.get(Calendar.MONTH) + 1);
+        String d = (String.valueOf(myCalendar.get(Calendar.DATE)).length() > 1) ? String.valueOf(myCalendar.get(Calendar.DATE)) : "0" + String.valueOf(myCalendar.get(Calendar.DATE));
 
-        String sdate = String.valueOf(myCalendar.get(Calendar.YEAR))+"-"+m+"-"+d;
-        if(TextUtils.isEmpty(tdate)){
-            Toast.makeText(getApplicationContext(),"Date is Required",Toast.LENGTH_LONG).show();
-        }else if(inCans == 0){
-            if(inPrice == 0){
-                if(inamount==0){
-                    Toast.makeText(getApplicationContext(),"Nothing to add record",Toast.LENGTH_LONG).show();
+        String sdate = String.valueOf(myCalendar.get(Calendar.YEAR)) + "-" + m + "-" + d;
+        if (TextUtils.isEmpty(tdate)) {
+            Toast.makeText(getApplicationContext(), "Date is Required", Toast.LENGTH_LONG).show();
+        } else if (inCans == 0) {
+            if (inPrice == 0) {
+                if (inamount == 0) {
+                    Toast.makeText(getApplicationContext(), "Nothing to add record", Toast.LENGTH_LONG).show();
 
-                }else {
+                } else {
                     db = customerHelper.getWritableDatabase();
                     try {
-                        db.execSQL("INSERT INTO "+table_name+" (Date, No_of_cans, Price, Paid) VALUES('" + sdate + "'," + inCans + "," + inPrice + ","+inamount+")");
+                        db.execSQL("INSERT INTO " + table_name + " (Date, No_of_cans, Price, Paid) VALUES('" + sdate + "'," + inCans + "," + inPrice + "," + inamount + ")");
                         db.close();
-                        Toast.makeText(getApplicationContext(),"Successfully added!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Successfully added!", Toast.LENGTH_SHORT).show();
                         dateField.setText("");
                         cans.setText("");
                         price.setText("");
                         amountPaid.setText("");
 
                     } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
-            }else {
-                Toast.makeText(getApplicationContext(),"Please check your no. of cans before entering price",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Please check your no. of cans before entering price", Toast.LENGTH_LONG).show();
             }
-        }else {
-            if (inPrice == 0){
-                Toast.makeText(getApplicationContext(),"Pleae enter the price",Toast.LENGTH_LONG).show();
+        } else {
+            if (inPrice == 0) {
+                Toast.makeText(getApplicationContext(), "Pleae enter the price", Toast.LENGTH_LONG).show();
 
-            }else {
+            } else {
                 db = customerHelper.getWritableDatabase();
                 try {
-                    db.execSQL("INSERT INTO "+table_name+" (Date, No_of_cans, Price, Paid) VALUES('" + sdate + "'," + inCans + "," + inPrice + ","+inamount+")");
+                    db.execSQL("INSERT INTO " + table_name + " (Date, No_of_cans, Price, Paid) VALUES('" + sdate + "'," + inCans + "," + inPrice + "," + inamount + ")");
                     db.close();
-                    Toast.makeText(getApplicationContext(),"Successfully added!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Successfully added!", Toast.LENGTH_SHORT).show();
                     dateField.setText("");
                     cans.setText("");
                     price.setText("");
                     amountPaid.setText("");
 
                 } catch (Exception e) {
-                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         }
-
-
 
 
     }
@@ -129,6 +180,7 @@ public class addRecord extends AppCompatActivity {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getFragmentManager(), "datePicker");
     }
+
     public static class DatePickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
@@ -147,7 +199,7 @@ public class addRecord extends AppCompatActivity {
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             addRecord a = (addRecord) getActivity();
-            a.myCalendar.set(year,month,day);
+            a.myCalendar.set(year, month, day);
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMMM yyyy");
             Date actualdate = new Date(a.myCalendar.getTimeInMillis());
             String adate = sdf.format(actualdate);

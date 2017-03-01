@@ -2,6 +2,7 @@ package net.robot_inc.watertracking;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,14 +79,14 @@ public class stockAdapter extends BaseAdapter implements Filterable{
 
         if (child == null) {
             layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            child = layoutInflater.inflate(R.layout.stock_view_helper, null);
+            child = layoutInflater.inflate(R.layout.stock_record_layout, null);
 
             holder = new Holder();
 
 
-            holder.textViewDate = (TextView) child.findViewById(R.id.textViewDate);
-            holder.textviewNo_of_cans = (TextView) child.findViewById(R.id.textViewNo_of_cans);
-            holder.textviewPrice = (TextView) child.findViewById(R.id.textViewPrice);
+            holder.textViewDate = (TextView) child.findViewById(R.id.stkviewDate);
+            holder.textviewNo_of_cans = (TextView) child.findViewById(R.id.stkviewNo_of_cans);
+            holder.textviewPrice = (TextView) child.findViewById(R.id.stkviewPrice);
 
             child.setTag(holder);
 
@@ -138,7 +139,11 @@ public class stockAdapter extends BaseAdapter implements Filterable{
         holder.textViewDate.setText(adate);
         holder.textviewNo_of_cans.setText(no_of_cans.get(position));
         holder.textviewPrice.setText(price.get(position));
-
+        if (position % 2 == 1) {
+            child.setBackgroundColor(Color.rgb(255,204,153));
+        } else {
+            child.setBackgroundColor(Color.rgb(255,108,0));
+        }
         return child;
     }
 

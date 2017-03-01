@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/StkviewEdit"
+        android:title="View/Edit Stock"/>
+
+    <item android:id="@+id/Stkdelete"
+        android:title="Delete Stock"/>
+</menu>

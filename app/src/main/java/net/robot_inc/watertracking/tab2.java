@@ -172,6 +172,7 @@ public class tab2 extends Fragment {
         super.onResume();
 
         ShowSQLiteDBdata();
+        cancelInput.setText("");
 
 
     }
@@ -397,6 +398,7 @@ public class tab2 extends Fragment {
         listView.setAdapter(ListAdapter);
 
         cursor.close();
+        SQLITEDATABASE.close();
 
     }
 }

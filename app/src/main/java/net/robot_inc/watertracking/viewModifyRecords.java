@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -17,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -28,11 +32,11 @@ public class viewModifyRecords extends AppCompatActivity {
 
 
     private ListView listView;
-    private Button btnRecordAdd;
+    private Button btnRecordAdd,cancelSearch;
     SQLiteDatabase SQLITEDATABASE;
     customerDataHelper SQLITEHELPER;
     customerDataAdapter customerAdapter;
-
+    EditText searchView;
     Bundle values;
     String table_name = "";
     Cursor cursor;
@@ -82,7 +86,35 @@ public class viewModifyRecords extends AppCompatActivity {
                 return false;
             }
         });
+        searchView = (EditText) findViewById(R.id.searchrecords);
 
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(TextUtils.isEmpty(String.valueOf(s))){
+                    ShowSQLiteDBdata();
+                }else {
+                    filterData(String.valueOf(s));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        cancelSearch = (Button) findViewById(R.id.btncancelsearch);
+        cancelSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchView.setText("");
+            }
+        });
         registerForContextMenu(listView);
 
         ShowSQLiteDBdata();
@@ -107,8 +139,8 @@ public class viewModifyRecords extends AppCompatActivity {
 
                 DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Date)));
 
-
                 NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));
+
                 PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Price)));
 
                 PAID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Paid)));
@@ -206,5 +238,74 @@ public class viewModifyRecords extends AppCompatActivity {
         alert_box.show();
     }
 
+    public void filterData(String filterText){
+        try {
+            SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM "+table_name+" WHERE strftime('%m', Date) = '"+getMonthNo(filterText)+"' OR  strftime('%Y', Date) = '"+filterText+"' OR strftime('%d', Date) = '"+filterText+"' OR No_of_cans LIKE \'%"+filterText+"%\' OR Price LIKE \'%"+filterText+"%\' OR Paid LIKE \'%"+filterText+"%\'",null);
+            ID_ArrayList.clear();
+            DATE_ArrayList.clear();
+            NO_OF_CANS_ArrayList.clear();
+            PRICE_ArrayList.clear();
+            PAID_ArrayList.clear();
+            if (cursor.moveToFirst()) {
+                do {
+                    ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_ID)));
 
+                    DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Date)));
+
+                    NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));
+
+                    PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Price)));
+
+                    PAID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Paid)));
+                } while (cursor.moveToNext());
+            }
+
+            customerAdapter = new customerDataAdapter(getApplicationContext(),
+
+                    ID_ArrayList,
+                    DATE_ArrayList,
+                    NO_OF_CANS_ArrayList,
+                    PRICE_ArrayList,
+                    PAID_ArrayList
+
+            );
+
+            listView.setAdapter(customerAdapter);
+
+            cursor.close();
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+
+    }
+    public String getMonthNo(String monthString){
+        monthString = monthString.toLowerCase();
+        if("january".contains(monthString)){
+            return "01";
+        }else if("february".contains(monthString)){
+            return "02";
+        }else if("march".contains(monthString)){
+            return "03";
+        }else if("april".contains(monthString)){
+            return "04";
+        }else if("may".contains(monthString)){
+            return "05";
+        }else if("june".contains(monthString)){
+            return "06";
+        }else if("july".contains(monthString)){
+            return "07";
+        }else if("august".contains(monthString)){
+            return "08";
+        }else if("september".contains(monthString)){
+            return "09";
+        }else if("october".contains(monthString)){
+            return "10";
+        }else if("november".contains(monthString)){
+            return "11";
+        }else if("december".contains(monthString)){
+            return "12";
+        }
+        return "0";
+    }
 }

@@ -6,7 +6,9 @@ import android.app.DialogFragment;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -109,7 +111,56 @@ public class updateRecords extends AppCompatActivity {
                 }
             }
         });
+        canfield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int incans = 0;
+                int inprice = 0;
+                if (!TextUtils.isEmpty(String.valueOf(s))) {
+                    incans = Integer.parseInt(String.valueOf(s));
+                    if (!TextUtils.isEmpty(pricefield.getText().toString())) {
+                        inprice = Integer.parseInt(pricefield.getText().toString());
+                    }
+                }
+                amountfield.setHint(String.valueOf("Payable Amount = " + incans * inprice));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        pricefield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int incans = 0;
+                int inprice = 0;
+                if (!TextUtils.isEmpty(String.valueOf(s))) {
+                    inprice = Integer.parseInt(String.valueOf(s));
+                    if (!TextUtils.isEmpty(canfield.getText().toString())) {
+                        incans = Integer.parseInt(canfield.getText().toString());
+                    }
+                }
+                amountfield.setHint(String.valueOf("Payable Amount = " + incans * inprice));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         populateValues();
 
 
