@@ -6,12 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -31,6 +34,7 @@ public class tab1 extends Fragment {
     SQLiteDatabase SQLITEDATABASE;
     stockHellper SQLITEHELPER;
     customerDbHelper dh;
+    customerDataHelper customerrecords;
     Spinner spinner3;
     Cursor cursor;
     stockAdapter ListAdapter ;
@@ -39,6 +43,7 @@ public class tab1 extends Fragment {
     ArrayList<String> DATE_ArrayList = new ArrayList<String>();
     ArrayList<String> NO_OF_CANS_ArrayList = new ArrayList<String>();
     ArrayList<String> PRICE_ArrayList = new ArrayList<String>();
+    ArrayList<String> Name_ArrayList = new ArrayList<>();
 
     public tab1() {
         // Required empty public constructor
@@ -93,8 +98,10 @@ public class tab1 extends Fragment {
 
             }
         });
+
         SQLITEHELPER = new stockHellper(getActivity());
         dh = new customerDbHelper(getActivity());
+        customerrecords = new customerDataHelper(getActivity());
         stock = (TextView) view.findViewById(R.id.textView3);
         availableStock = (TextView) view.findViewById(R.id.stockavailable);
         availableStock.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +128,7 @@ public class tab1 extends Fragment {
     }
     private int getAvailableStock() {
         int answer = 0;
+        Name_ArrayList.clear();
         SQLITEDATABASE = SQLITEHELPER.getReadableDatabase();
         Cursor cursor = SQLITEDATABASE.rawQuery("SELECT * FROM stock",null);
         if(cursor.moveToFirst()){
@@ -132,10 +140,41 @@ public class tab1 extends Fragment {
         cursor.close();
         SQLITEDATABASE.close();
 
+        SQLITEDATABASE = dh.getWritableDatabase();
+        cursor = SQLITEDATABASE.rawQuery("SELECT Name FROM customers",null);
+        if(cursor.moveToFirst()){
+            do{
+                Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+            }while(cursor.moveToNext());
 
-        Log.i("answer",String.valueOf(answer));
+        }
+        Log.i("array List Length",String.valueOf(Name_ArrayList.size()));
+        cursor.close();
+        SQLITEDATABASE.close();
+        int totalSold = 0;
+        SQLITEDATABASE = customerrecords.getWritableDatabase();
+        for (String name : Name_ArrayList){
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM "+name,null);
+            if (cursor.moveToFirst()){
+                do {
+                    totalSold = totalSold + Integer.parseInt(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));
 
-        return answer;
+                }while (cursor.moveToNext());
+            }
+
+        }
+        cursor.close();
+        SQLITEDATABASE.close();
+        Log.i("answer",String.valueOf(answer-totalSold));
+        Log.i("total sold",String.valueOf(totalSold));
+        for(String name : Name_ArrayList){
+            Log.i("Name = ",name);
+        }
+
+
+
+
+        return answer-totalSold;
 
     }
     private void ShowSQLiteDBdata() {

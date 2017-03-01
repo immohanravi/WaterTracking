@@ -36,6 +36,7 @@ public class updateRecords extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_records);
+        getSupportActionBar().setTitle("update records");
         dh = new customerDataHelper(getApplicationContext());
         datefield = (EditText) findViewById(R.id.etdate);
         canfield = (EditText) findViewById(R.id.etnoofcans);

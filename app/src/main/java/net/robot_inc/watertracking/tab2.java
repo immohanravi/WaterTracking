@@ -19,6 +19,8 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.TimeUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
@@ -31,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -39,6 +42,7 @@ import android.widget.Toast;
 
 import net.robot_inc.watertracking.R;
 
+import java.net.InterfaceAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +57,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class tab2 extends Fragment {
 
-    Button loadImage;
+    Button loadImage,cancelBtn;
     HashMap<String, Integer> pendingAmount = new HashMap<>();
     Bundle values;
     Intent intent;
@@ -69,6 +73,7 @@ public class tab2 extends Fragment {
     Cursor cursor;
     customerDbAdapter ListAdapter;
     ListView listView;
+    EditText cancelInput;
     ArrayList<String> ID_ArrayList = new ArrayList<String>();
     ArrayList<String> Name_ArrayList = new ArrayList<String>();
     ArrayList<String> Number_ArrayList = new ArrayList<String>();
@@ -133,8 +138,30 @@ public class tab2 extends Fragment {
         SQLITEHELPER = new customerDbHelper(getActivity());
 
         ShowSQLiteDBdata();
+        cancelInput = (EditText) view.findViewById(R.id.searchcustomer);
+        cancelInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterCustomerDatabase(String.valueOf(s));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        cancelBtn = (Button) view.findViewById(R.id.cancelBtn);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelInput.setText("");
+            }
+        });
         return view;
 
 
@@ -317,5 +344,59 @@ public class tab2 extends Fragment {
 
 
     }
+    public void filterCustomerDatabase(String filterText){
+        SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+        int position = 0;
+        Cursor cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers",null);;
+        try{
+            Long x = Long.parseLong(filterText);
+            position  = 2;
+        }catch (NumberFormatException e){
 
+                    position = 1;
+        }
+        if(position == 1){
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers WHERE Name LIKE \'%"+filterText+"%\' OR Address LIKE \'%"+filterText+"%\'",null);
+        }else if (position == 2){
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers WHERE Number  LIKE \'%"+filterText+"%\'",null);
+        }
+
+        ID_ArrayList.clear();
+        Name_ArrayList.clear();
+        Number_ArrayList.clear();
+        Address_ArrayList.clear();
+        Image_ArrayList.clear();
+
+        if (cursor.moveToFirst()) {
+            do {
+                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)));
+
+                Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+
+                Address_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
+
+                Number_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
+
+                Image_ArrayList.add(cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
+
+            } while (cursor.moveToNext());
+        }
+        getBitmap();
+        setPendingAmount();
+        ListAdapter = new customerDbAdapter(getActivity(),
+
+                ID_ArrayList,
+                Name_ArrayList,
+                Address_ArrayList,
+                Number_ArrayList,
+                imageList,
+                pendingAmount
+
+        );
+
+        listView.setAdapter(ListAdapter);
+
+        cursor.close();
+
+    }
 }

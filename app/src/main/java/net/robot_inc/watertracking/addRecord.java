@@ -29,6 +29,8 @@ public class addRecord extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_record);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setTitle("Add Records");
         myCalendar = Calendar.getInstance();
         customerHelper = new customerDataHelper(getApplicationContext());
         dateField = (EditText) findViewById(R.id.et_date);
