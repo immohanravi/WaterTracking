@@ -8,5 +8,6 @@
     <color name="lightGrey">#f9fcff</color>
     <color name="pressed_color">#4d90fe</color>
     <color name="default_color">#ffffff</color>
+    <color name="yellow">#fded71</color>
 
 </resources>

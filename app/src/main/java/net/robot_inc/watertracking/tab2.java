@@ -4,6 +4,7 @@ package net.robot_inc.watertracking;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -86,7 +87,7 @@ public class tab2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.i("tab2", "called");
+
         View view = inflater.inflate(R.layout.fragment_tab2, container, false);
         /*
         iv = (ImageView) view.findViewById(R.id.imageView2);
@@ -202,7 +203,7 @@ public class tab2 extends Fragment {
     }
 
     private void ShowSQLiteDBdata() {
-        Log.i("is next", String.valueOf("called"));
+
         SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
 
 
@@ -214,7 +215,7 @@ public class tab2 extends Fragment {
         Number_ArrayList.clear();
         Address_ArrayList.clear();
         Image_ArrayList.clear();
-        Log.i("is next", String.valueOf(cursor.moveToFirst()));
+
         if (cursor.moveToFirst()) {
             do {
                 ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)));
@@ -265,7 +266,7 @@ public class tab2 extends Fragment {
                     intent.putExtras(values);
                     startActivity(intent);
                 } catch (Exception e) {
-                    Log.i("menu", e.getMessage());
+                   Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
 
@@ -298,7 +299,7 @@ public class tab2 extends Fragment {
         alert_box.setMessage("Are you Sure, Do you want to Remove this customer from list?\nAll the records with be deleted.");
         alert_box.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dia, int which) {
                 try {
                     SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
                     SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='" + values.getString("id") + "'");
@@ -318,7 +319,7 @@ public class tab2 extends Fragment {
         alert_box.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dia, int which) {
                 // TODO Auto-generated method stub
 
             }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -68,15 +70,14 @@ public class tab1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab1, container, false);
-
+         getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // Inflate the layout for this fragment
        snack = Snackbar.make(view, "Available Stock = ", Snackbar.LENGTH_INDEFINITE);
         View Sview = snack.getView();
         TextView tv = (TextView) Sview.findViewById(android.support.design.R.id.snackbar_text);
-        tv.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-
-        tv.setGravity(Gravity.CENTER);
-        tv.setTextSize(24);
+        tv.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
+        tv.setTextSize(16);
 
         snack.show();
         listView = (ListView) view.findViewById(R.id.listView);
@@ -146,14 +147,16 @@ public class tab1 extends Fragment {
         ShowSQLiteDBdata();
         stockAvailble = getAvailableStock();
         snack.setText("Available Stock = "+stockAvailble);
+       listView.requestFocus();
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        ShowSQLiteDBdata();
+        stockAvailble = getAvailableStock();
+        snack.setText("Available Stock = "+stockAvailble);
+        listView.invalidate();
 
     }
 
@@ -165,7 +168,7 @@ public class tab1 extends Fragment {
         if (cursor.moveToFirst()) {
             do {
                 answer = answer + cursor.getInt(2);
-                Log.i("date", String.valueOf(cursor.getString(1)));
+
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -179,7 +182,7 @@ public class tab1 extends Fragment {
             } while (cursor.moveToNext());
 
         }
-        Log.i("array List Length", String.valueOf(Name_ArrayList.size()));
+
         cursor.close();
         SQLITEDATABASE.close();
         int totalSold = 0;
@@ -196,11 +199,6 @@ public class tab1 extends Fragment {
         }
         cursor.close();
         SQLITEDATABASE.close();
-        Log.i("answer", String.valueOf(answer - totalSold));
-        Log.i("total sold", String.valueOf(totalSold));
-        for (String name : Name_ArrayList) {
-            Log.i("Name = ", name);
-        }
 
 
         return answer - totalSold;
@@ -256,7 +254,7 @@ public class tab1 extends Fragment {
                 case "date":{
                     if(Integer.parseInt(getMonthNo(filterText))>0){
                         cursor = SQLITEDATABASE.rawQuery("SELECT * FROM stock WHERE strftime('%m', date) = '"+getMonthNo(filterText)+"'",null);
-                        Log.i("select test","SELECT * FROM stock WHERE strftime('%m', date) = '"+getMonthNo(filterText)+"'");
+                        .i("select test","SELECT * FROM stock WHERE strftime('%m', date) = '"+getMonthNo(filterText)+"'");
                     }else if (filterText.length()==4){
                         cursor = SQLITEDATABASE.rawQuery("SELECT * FROM stock WHERE strftime('%Y', date) = '"+filterText+"'",null);
                     }else {
@@ -396,7 +394,7 @@ public class tab1 extends Fragment {
                     intent.putExtras(values);
                     startActivityForResult(intent, 0);
                 } catch (Exception e) {
-                    Log.i("menu", e.getMessage());
+                   Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                 }
 
 
@@ -420,7 +418,7 @@ public class tab1 extends Fragment {
         alert_box.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dia, int which) {
                 try {
                     SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
                     SQLITEDATABASE.execSQL("DELETE FROM stock WHERE id='" + values.getString("id") + "'");
@@ -437,7 +435,7 @@ public class tab1 extends Fragment {
         alert_box.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dia, int which) {
                 // TODO Auto-generated method stub
                 Toast.makeText(getContext(), "No Button Clicked", Toast.LENGTH_LONG).show();
             }
