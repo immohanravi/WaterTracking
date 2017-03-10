@@ -7,32 +7,43 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No of cans Sold = "
-            android:id="@+id/soldCans"
-            android:textSize="24dp"
-            android:padding="5dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Profit this Month = "
-            android:id="@+id/profit"
-            android:textSize="24dp"
-            android:padding="5dp"/>
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No of cans Sold = 0"
+                android:id="@+id/soldCans"
+                android:textSize="24dp"
+                android:padding="5dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profit this Month = 0"
+                android:id="@+id/profit"
+                android:textSize="24dp"
+                android:padding="5dp"/>
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:id="@+id/barchart">
+            <com.github.mikephil.charting.charts.BarChart
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:id="@+id/barchart">
 
-        </com.github.mikephil.charting.charts.BarChart>
-    </LinearLayout>
+            </com.github.mikephil.charting.charts.BarChart>
+            <com.github.mikephil.charting.charts.LineChart
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:id="@+id/linechart">
+
+            </com.github.mikephil.charting.charts.LineChart>
+        </LinearLayout>
+
+    </ScrollView>
 
 
 

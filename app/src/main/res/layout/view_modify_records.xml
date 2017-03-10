@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:id="@+id/searchrecords"
         android:layout_height="40dp"
-        android:hint="Search Customer"
+        android:hint="Search Records"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
 

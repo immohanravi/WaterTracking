@@ -156,7 +156,7 @@ public class tab1 extends Fragment {
         super.onResume();
         stockAvailble = getAvailableStock();
         snack.setText("Available Stock = "+stockAvailble);
-        listView.invalidate();
+        ShowSQLiteDBdata();
 
     }
 
