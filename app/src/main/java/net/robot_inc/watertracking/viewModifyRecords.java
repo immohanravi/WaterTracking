@@ -61,6 +61,7 @@ public class viewModifyRecords extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), addRecord.class);
                 intent.putExtra("table_name",getIntent().getExtras().getString("table_name"));
+
                 startActivity(intent);
             }
         });
@@ -183,6 +184,7 @@ public class viewModifyRecords extends AppCompatActivity {
                 try{
                     Intent intent = new Intent(getApplicationContext(), updateRecords.class);
                     intent.putExtras(values);
+
                     startActivity(intent);
                 }catch (Exception e){
                     Log.i("menu", e.getMessage());
@@ -308,4 +310,6 @@ public class viewModifyRecords extends AppCompatActivity {
         }
         return "0";
     }
+
+
 }

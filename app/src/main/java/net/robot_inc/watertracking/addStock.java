@@ -1,5 +1,6 @@
 package net.robot_inc.watertracking;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -70,6 +71,7 @@ public class addStock extends AppCompatActivity {
             Log.i("addStock",sdate);
             
         if(TextUtils.isEmpty(stockDate)||TextUtils.isEmpty(noOfcans)||TextUtils.isEmpty(stockPrice)){
+
             Toast.makeText(getApplicationContext(),"All fields required",Toast.LENGTH_LONG).show();
         }
         else {

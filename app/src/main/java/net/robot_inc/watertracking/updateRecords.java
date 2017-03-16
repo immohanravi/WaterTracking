@@ -3,6 +3,7 @@ package net.robot_inc.watertracking;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,18 +35,25 @@ public class updateRecords extends AppCompatActivity {
     int month;
     int date;
     Calendar myCalendar;
+    int AvailableStock = 0;
+    int presentStock = 0;
+    int stock = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_records);
         getSupportActionBar().setTitle("update records");
+
         dh = new customerDataHelper(getApplicationContext());
         datefield = (EditText) findViewById(R.id.etdate);
         canfield = (EditText) findViewById(R.id.etnoofcans);
         pricefield = (EditText) findViewById(R.id.etprice);
         amountfield = (EditText) findViewById(R.id.etpaid);
+
         values = getIntent().getExtras();
+        presentStock = Integer.parseInt(values.getString("cans"));
+        AvailableStock = getAvailableStock() + presentStock;
         table_name = values.getString("name");
         myCalendar = Calendar.getInstance();
         datefield.setOnClickListener(new View.OnClickListener() {
@@ -77,43 +86,57 @@ public class updateRecords extends AppCompatActivity {
                 Log.i("matching data", sdate + ":" + values.get("date"));
                 Log.i("matching data", canfield.getText() + ":" + values.get("number_of_cans"));
                 Log.i("matching data", pricefield.getText() + ":" + values.get("price"));
-                if ((sdate.equals(values.getString("date")) == false)) {
 
-                    try {
-                        db = dh.getWritableDatabase();
-                        db.execSQL("UPDATE " + table_name + " SET Date ='" + sdate + "' WHERE id='" + values.getString("id") + "'");
 
-                    } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                if (a <= AvailableStock) {
+                    if ((sdate.equals(values.getString("date")) == false)) {
+
+                        try {
+                            db = dh.getWritableDatabase();
+                            db.execSQL("UPDATE " + table_name + " SET Date ='" + sdate + "' WHERE id='" + values.getString("id") + "'");
+
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                        Log.i("update", "updated date");
                     }
-                    Log.i("update", "updated date");
-                }
-                if (a == 0) {
+                    if (a == 0) {
 
-                    if (b == 0) {
-                        if (c == 0) {
-                            Toast.makeText(getApplicationContext(), "Nothing to add record", Toast.LENGTH_LONG).show();
+                        if (b == 0) {
+                            if (c == 0) {
+                                Toast.makeText(getApplicationContext(), "Nothing to add record", Toast.LENGTH_LONG).show();
+                            } else {
+                                updateDatabase(a, b, c);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please check your no. of cans before entering price", Toast.LENGTH_LONG).show();
+                        }
+
+                    } else {
+                        if (b == 0) {
+                            Toast.makeText(getApplicationContext(), "Pleae enter the price", Toast.LENGTH_LONG).show();
+
                         } else {
                             updateDatabase(a, b, c);
                         }
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Please check your no. of cans before entering price", Toast.LENGTH_LONG).show();
+
                     }
+
 
                 } else {
-                    if (b == 0) {
-                        Toast.makeText(getApplicationContext(), "Pleae enter the price", Toast.LENGTH_LONG).show();
-
-                    }else {
-                        updateDatabase(a,b,c);
-                    }
+                    Toast.makeText(getApplicationContext(), "There is no enough cans\nAvailable Stock = " + AvailableStock, Toast.LENGTH_LONG).show();
 
                 }
+
             }
         });
         canfield.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (!TextUtils.isEmpty((String.valueOf(s)))) {
+
+                }
 
             }
 
@@ -125,14 +148,19 @@ public class updateRecords extends AppCompatActivity {
                     incans = Integer.parseInt(String.valueOf(s));
                     if (!TextUtils.isEmpty(pricefield.getText().toString())) {
                         inprice = Integer.parseInt(pricefield.getText().toString());
+
                     }
                 }
+
+
                 amountfield.setHint(String.valueOf("Payable Amount = " + incans * inprice));
 
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+
+
             }
         });
 
@@ -302,6 +330,55 @@ public class updateRecords extends AppCompatActivity {
 
         }
 
+
+    }
+
+    private int getAvailableStock() {
+        int answer = 0;
+        ArrayList<String> Name_ArrayList = new ArrayList<>();
+        SQLiteDatabase database;
+        stockHellper sh;
+        sh = new stockHellper(getApplicationContext());
+        database = sh.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT * FROM stock", null);
+        if (cursor.moveToFirst()) {
+            do {
+                answer = answer + cursor.getInt(2);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        customerDbHelper ch = new customerDbHelper(getApplicationContext());
+        database = ch.getWritableDatabase();
+        cursor = database.rawQuery("SELECT Name FROM customers", null);
+        if (cursor.moveToFirst()) {
+            do {
+                Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+            } while (cursor.moveToNext());
+
+        }
+
+        cursor.close();
+        database.close();
+        int totalSold = 0;
+        customerDataHelper cdh = new customerDataHelper(getApplicationContext());
+        database = cdh.getWritableDatabase();
+        for (String name : Name_ArrayList) {
+            cursor = database.rawQuery("SELECT * FROM " + name, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    totalSold = totalSold + Integer.parseInt(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));
+
+                } while (cursor.moveToNext());
+            }
+
+        }
+        cursor.close();
+        database.close();
+
+
+        return answer - totalSold;
 
     }
 }

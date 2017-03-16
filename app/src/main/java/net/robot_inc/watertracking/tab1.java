@@ -437,7 +437,7 @@ public class tab1 extends Fragment {
             @Override
             public void onClick(DialogInterface dia, int which) {
                 // TODO Auto-generated method stub
-                Toast.makeText(getContext(), "No Button Clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), "No Button Clicked", Toast.LENGTH_LONG).show();
             }
         });
         alert_box.show();

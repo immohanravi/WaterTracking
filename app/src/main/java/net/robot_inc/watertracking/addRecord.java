@@ -3,6 +3,7 @@ package net.robot_inc.watertracking;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,6 +25,7 @@ public class addRecord extends AppCompatActivity {
     EditText dateField, price, cans, amountPaid;
     Button addrecord;
     Calendar myCalendar;
+    int AvailableStock = 0;
     SQLiteDatabase db;
     String table_name = "";
     customerDataHelper customerHelper;
@@ -45,7 +48,13 @@ public class addRecord extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i("strings", cans.getText().toString());
-                insertData(dateField.getText().toString(), cans.getText().toString(), price.getText().toString(), amountPaid.getText().toString());
+                AvailableStock = getAvailableStock();
+                if (Integer.parseInt(cans.getText().toString()) <= AvailableStock) {
+                    insertData(dateField.getText().toString(), cans.getText().toString(), price.getText().toString(), amountPaid.getText().toString());
+
+                }else {
+                    Toast.makeText(getApplicationContext(),"There is no enough cans\nAvailable Stock = "+AvailableStock,Toast.LENGTH_LONG).show();
+                }
             }
 
 
@@ -71,7 +80,7 @@ public class addRecord extends AppCompatActivity {
                     incans = Integer.parseInt(String.valueOf(s));
                     if (!TextUtils.isEmpty(price.getText().toString())) {
                         inprice = Integer.parseInt(price.getText().toString());
-                      }
+                    }
                 }
                 amountPaid.setHint(String.valueOf("Payable Amount = " + incans * inprice));
 
@@ -79,7 +88,7 @@ public class addRecord extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                          }
+            }
         });
 
         price.addTextChangedListener(new TextWatcher() {
@@ -209,4 +218,53 @@ public class addRecord extends AppCompatActivity {
 
 
     }
+    private int getAvailableStock() {
+        int answer = 0;
+        ArrayList<String> Name_ArrayList = new ArrayList<>();
+        SQLiteDatabase database;
+        stockHellper sh;
+        sh = new stockHellper(getApplicationContext());
+        database = sh.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT * FROM stock", null);
+        if (cursor.moveToFirst()) {
+            do {
+                answer = answer + cursor.getInt(2);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        database.close();
+        customerDbHelper ch = new customerDbHelper(getApplicationContext());
+        database = ch.getWritableDatabase();
+        cursor = database.rawQuery("SELECT Name FROM customers", null);
+        if (cursor.moveToFirst()) {
+            do {
+                Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+            } while (cursor.moveToNext());
+
+        }
+
+        cursor.close();
+        database.close();
+        int totalSold = 0;
+        customerDataHelper cdh = new customerDataHelper(getApplicationContext());
+        database = cdh.getWritableDatabase();
+        for (String name : Name_ArrayList) {
+            cursor = database.rawQuery("SELECT * FROM " + name, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    totalSold = totalSold + Integer.parseInt(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));
+
+                } while (cursor.moveToNext());
+            }
+
+        }
+        cursor.close();
+        database.close();
+
+
+        return answer - totalSold;
+
+    }
+
 }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.FloatRange;
 import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -46,6 +47,7 @@ public class tab3 extends Fragment {
     int cansold;
     int minYear = 0;
     int maxYear = 0;
+    String minMonth = "01";
     stockHellper sh;
     customerDataHelper cdh;
     customerDbHelper ch;
@@ -56,7 +58,7 @@ public class tab3 extends Fragment {
     };
     protected String[] dMonths = new String[]{
             "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
-    public BarChart barchart;
+    public BarChart barchart, barchart2;
     ArrayList<String> Stock_DATE_ArrayList = new ArrayList<String>();
     ArrayList<String> Stock_NO_OF_CANS_ArrayList = new ArrayList<String>();
     ArrayList<String> Stock_PRICE_ArrayList = new ArrayList<String>();
@@ -65,10 +67,11 @@ public class tab3 extends Fragment {
     ArrayList<String> Address_ArrayList = new ArrayList<String>();
     ArrayList<String> Pending_ArrayList = new ArrayList<>();
     HashMap<String, ArrayList<ArrayList<String>>> records = new HashMap<>();
-    HashMap<String, HashMap<String, ArrayList<String>>> StockyearMap;
-    HashMap<String, HashMap<String, ArrayList<String>>> RecordyearMap;
+    HashMap<String, HashMap<String, ArrayList<String>>> StockyearMap = new HashMap<>();
+    HashMap<String, HashMap<String, ArrayList<String>>> RecordyearMap = new HashMap<>();
+    HashMap<String, HashMap<String, Integer>> profit = new HashMap<>();
     int count = 0;
-    int chartMaxValue = 0;
+    int chartMaxValue = 0, profitMaxValue = 0;
     String thisYear = "";
     String thisMonth = "";
 
@@ -131,10 +134,44 @@ public class tab3 extends Fragment {
                 return mMonths[(int) value];
             }
         });
+        barchart2 = (BarChart) view.findViewById(R.id.barchart2);
+        barchart2.getDescription().setEnabled(false);
+        barchart2.setBackgroundColor(Color.WHITE);
+        barchart2.setDrawGridBackground(false);
+        barchart2.setDrawBarShadow(true);
+        barchart2.setHighlightFullBarEnabled(true);
+        barchart2.setMinimumWidth(20);
+
+        Legend l2 = barchart2.getLegend();
+        l.setWordWrapEnabled(true);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+
+
+        YAxis leftAxis2 = barchart2.getAxisLeft();
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setLabelCount(10);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        XAxis xAxis2 = barchart2.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        // xAxis.setAxisMinimum(0f);
+        xAxis.setGranularity(0f);
+        //xAxis.setAxisMinimum(0f);
+        xAxis.setLabelCount(12);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+
+                return mMonths[(int) value];
+            }
+        });
         collectData();
 
 
-        setData(12, chartMaxValue);
+        setData(12, chartMaxValue, profitMaxValue);
 
         return view;
     }
@@ -143,10 +180,10 @@ public class tab3 extends Fragment {
     public void onResume() {
         super.onResume();
         collectData();
-        setData(12, chartMaxValue);
+        setData(12, chartMaxValue, profitMaxValue);
     }
 
-    private void setData(int count, float range) {
+    private void setData(int count, float range, float rang2) {
 
         float start = 0f;
 
@@ -159,13 +196,15 @@ public class tab3 extends Fragment {
 
 
         if (RecordyearMap.isEmpty() == false) {
+            if (RecordyearMap.containsKey(thisYear)) {
+                for (String month : RecordyearMap.get(thisYear).keySet()) {
 
-            for (String month : RecordyearMap.get(thisYear).keySet()) {
-
-                yVals1.add(new BarEntry(Integer.parseInt(month) - 1, Float.parseFloat(RecordyearMap.get(thisYear).get(month).get(0))));
+                    yVals1.add(new BarEntry(Integer.parseInt(month) - 1, Float.parseFloat(RecordyearMap.get(thisYear).get(month).get(0))));
 
 
+                }
             }
+
 
         }
 
@@ -194,6 +233,53 @@ public class tab3 extends Fragment {
 
             barchart.setData(data);
         }
+
+        ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
+
+        for (int i = (int) start; i < start + count; i++) {
+
+            yVals2.add(new BarEntry(i, 0));
+        }
+
+
+        if (profit.isEmpty() == false) {
+            if (profit.containsKey(thisYear)) {
+                for (String month : profit.get(thisYear).keySet()) {
+
+                    yVals2.add(new BarEntry(Integer.parseInt(month) - 1, Float.parseFloat(String.valueOf(profit.get(thisYear).get(month)))));
+
+
+                }
+            }
+
+
+        }
+
+        BarDataSet set2;
+
+        if (barchart2.getData() != null &&
+                barchart2.getData().getDataSetCount() > 0) {
+            set2 = (BarDataSet) barchart2.getData().getDataSetByIndex(0);
+            set2.setValues(yVals2);
+            barchart.getData().notifyDataChanged();
+            barchart.notifyDataSetChanged();
+        } else {
+            set2 = new BarDataSet(yVals2, "The year " + thisYear);
+
+            //set1.setDrawIcons(true);
+
+            set2.setColors(ColorTemplate.COLORFUL_COLORS);
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set2);
+
+            BarData data = new BarData(dataSets);
+            data.setValueTextSize(10f);
+
+            data.setBarWidth(0.9f);
+
+            barchart2.setData(data);
+        }
     }
 
 
@@ -202,8 +288,7 @@ public class tab3 extends Fragment {
     }
 
     public void collectData() {
-        RecordyearMap = new HashMap<>();
-        StockyearMap = new HashMap<>();
+
         records = new HashMap<>();
 
         try {
@@ -310,7 +395,9 @@ public class tab3 extends Fragment {
         }
         int cans = 0;
         int amount = 0;
+
         for (String key : Stockmonthsmap.keySet()) {
+            values.clear();
             for (String month : Stockmonthsmap.get(key)) {
                 cans = 0;
                 averagePrice.clear();
@@ -328,6 +415,7 @@ public class tab3 extends Fragment {
                 averagePrice.add(String.valueOf(amount / cans));
 
                 values.put(month, (ArrayList<String>) averagePrice.clone());
+
             }
             minYear = Math.min(minYear, Integer.parseInt(key));
             maxYear = Math.max(maxYear, Integer.parseInt(key));
@@ -354,6 +442,7 @@ public class tab3 extends Fragment {
                 recyearslist.add(year);
             }
         }
+
         for (String year : recyearslist) {
             recmonthlist.clear();
             for (String name : records.keySet()) {
@@ -373,6 +462,7 @@ public class tab3 extends Fragment {
         int noSoldCans = 0;
         int recamount = 0;
         for (String year : recordmonthsmap.keySet()) {
+            recvalues.clear();
             for (String month : recordmonthsmap.get(year)) {
                 noSoldCans = 0;
                 averageprice.clear();
@@ -424,11 +514,14 @@ public class tab3 extends Fragment {
             int totalBought = 0;
             for (String month : StockyearMap.get(year).keySet()) {
                 totalBought = totalBought + Integer.parseInt(StockyearMap.get(year).get(month).get(0));
+
+
             }
 
             yearWiseBought.put(year, totalBought);
         }
         for (String year : RecordyearMap.keySet()) {
+            maxYear = Math.max(maxYear, Integer.parseInt(year));
             int totalSold = 0;
             for (String month : RecordyearMap.get(year).keySet()) {
                 totalSold = totalSold + Integer.parseInt(RecordyearMap.get(year).get(month).get(0));
@@ -436,7 +529,7 @@ public class tab3 extends Fragment {
             yearWiseSold.put(year, totalSold);
         }
 /*
-        HashMap<String, HashMap<String, Float>> profit = new HashMap<>();
+
         HashMap<String, Float> profitMonth = new HashMap<>();
         float montlyProfit = 0;
         int pendingCans = 0;
@@ -517,6 +610,153 @@ public class tab3 extends Fragment {
             txtprofit.setText("Profit this Month = " + profit.get(thisYear).get(thisMonth));
         }
 */
+
+        HashMap<String, HashMap<String, ArrayList<String>>> averageMap = new HashMap<>();
+        ArrayList<String> dummy = new ArrayList<>();
+        HashMap<String, ArrayList<String>> dummyHash = new HashMap<>();
+        int pending = 0;
+        int presentStock = 0;
+        int presentAverage = 0;
+
+        int count = 0;
+
+     /*   for (String m : dMonths) {
+            String year = String.valueOf(minYear);
+
+            if (StockyearMap.containsKey(year)) {
+                if (StockyearMap.get(year).containsKey(m)) {
+                    presentStock = Integer.parseInt(StockyearMap.get(year).get(m).get(0));
+                    presentAverage = Integer.parseInt(StockyearMap.get(year).get(m).get(1));
+
+                    dummy.add(String.valueOf(presentStock));
+                    dummy.add(String.valueOf(presentAverage));
+                    dummyHash.put(m, (ArrayList<String>) dummy.clone());
+                    if (RecordyearMap.containsKey(year)) {
+                        pending = Integer.parseInt(StockyearMap.get(year).get(m).get(0)) - Integer.parseInt(RecordyearMap.get(year).get(m).get(0));
+                        presentAverage = Integer.parseInt(StockyearMap.get(year).get(m).get(1));
+
+                    } else {
+                        pending = Integer.parseInt(StockyearMap.get(year).get(m).get(0));
+                        presentAverage = Integer.parseInt(StockyearMap.get(year).get(m).get(1));
+
+                    }
+                    break;
+                }
+
+            }
+        }*/
+
+        for (int a = minYear; a <= maxYear; a++) {
+            String year = String.valueOf(a);
+            dummyHash.clear();
+            if (StockyearMap.containsKey(year)) {
+                if (RecordyearMap.containsKey(year)) {
+                    for (String month : dMonths) {
+                        dummy.clear();
+                        if (StockyearMap.get(year).containsKey(month)) {
+                            if (RecordyearMap.get(year).containsKey(month)) {
+                                if (pending > 0) {
+                                    int mul1 = pending * presentAverage;
+                                    int mul2 = Integer.parseInt(StockyearMap.get(year).get(month).get(0)) * Integer.parseInt(StockyearMap.get(year).get(month).get(1));
+                                    int answer = (mul1 + mul2) / (pending + Integer.parseInt(StockyearMap.get(year).get(month).get(0)));
+                                    presentStock = pending + Integer.parseInt(StockyearMap.get(year).get(month).get(0));
+                                    presentAverage = answer;
+                                    pending = presentStock - Integer.parseInt(RecordyearMap.get(year).get(month).get(0));
+                                } else {
+                                    presentStock = pending + Integer.parseInt(StockyearMap.get(year).get(month).get(0));
+                                    presentAverage = Integer.parseInt(StockyearMap.get(year).get(month).get(1));
+                                    pending = presentStock - Integer.parseInt(RecordyearMap.get(year).get(month).get(0));
+                                }
+                                dummy.add(String.valueOf(presentStock));
+                                dummy.add(String.valueOf(presentAverage));
+                                dummyHash.put(month, (ArrayList<String>) dummy.clone());
+                            } else {
+                                if (pending > 0) {
+                                    int mul1 = pending * presentAverage;
+                                    int mul2 = Integer.parseInt(StockyearMap.get(year).get(month).get(0)) * Integer.parseInt(StockyearMap.get(year).get(month).get(1));
+                                    int answer = (mul1 + mul2) / (pending + Integer.parseInt(StockyearMap.get(year).get(month).get(0)));
+                                    presentStock = pending + Integer.parseInt(StockyearMap.get(year).get(month).get(0));
+                                    presentAverage = answer;
+                                    pending = presentStock;
+                                } else {
+                                    presentStock = presentStock + Integer.parseInt(StockyearMap.get(year).get(month).get(0));
+                                    presentAverage = Integer.parseInt(StockyearMap.get(year).get(month).get(1));
+                                    pending = presentStock;
+                                }
+                            }
+
+                        } else {
+                            if (RecordyearMap.get(year).containsKey(month)) {
+
+                                presentStock = pending;
+                                pending = pending - Integer.parseInt(RecordyearMap.get(year).get(month).get(0));;
+
+                                dummy.add(String.valueOf(presentStock));
+                                dummy.add(String.valueOf(presentAverage));
+                                dummyHash.put(month, (ArrayList<String>) dummy.clone());
+                            }
+                        }
+
+                    }
+
+                    averageMap.put(year, (HashMap<String, ArrayList<String>>) dummyHash.clone());
+                } else {
+                    dummyHash.clear();
+                    int totalBought = 0;
+                    int avgPrice = 0;
+                    for (String month : StockyearMap.get(year).keySet()) {
+                        totalBought = totalBought + Integer.parseInt(StockyearMap.get(year).get(month).get(0));
+                        avgPrice = avgPrice + Integer.parseInt(StockyearMap.get(year).get(month).get(0)) * Integer.parseInt(StockyearMap.get(year).get(month).get(1));
+
+                    }
+                    if (pending > 0 && Integer.parseInt(year) != minYear) {
+                        int mul1 = pending * presentAverage;
+                        int mul2 = totalBought * (avgPrice / totalBought);
+                        int answer = (mul1 + mul2) / (pending + totalBought);
+                        presentStock = pending + totalBought;
+                        presentAverage = answer;
+                        pending = presentStock;
+                    } else {
+                        presentStock = totalBought;
+                        presentAverage = avgPrice / totalBought;
+                        pending = presentStock;
+                    }
+
+
+                }
+
+
+            } else if (RecordyearMap.containsKey(year)) {
+                for (String month : dMonths) {
+                    dummy.clear();
+                    if (RecordyearMap.get(year).containsKey(month)) {
+
+                        pending = presentStock - Integer.parseInt(RecordyearMap.get(year).get(month).get(0));
+                        dummy.add(String.valueOf(presentStock));
+                        dummy.add(String.valueOf(presentAverage));
+                        dummyHash.put(month, (ArrayList<String>) dummy.clone());
+                    }
+
+                }
+                averageMap.put(year, (HashMap<String, ArrayList<String>>) dummyHash.clone());
+
+            }
+
+        }
+
+        HashMap<String, Integer> dummyMap = new HashMap<>();
+        for (String year : averageMap.keySet()) {
+            dummyMap.clear();
+            Log.i("Year = ", year);
+            for (String month : averageMap.get(year).keySet()) {
+                int priceDifference = Integer.parseInt(RecordyearMap.get(year).get(month).get(1)) - Integer.parseInt(averageMap.get(year).get(month).get(1));
+                int actualProfit = priceDifference * Integer.parseInt(RecordyearMap.get(year).get(month).get(0));
+                profitMaxValue = Math.max(profitMaxValue, actualProfit);
+                dummyMap.put(month, actualProfit);
+            }
+
+            profit.put(year, (HashMap<String, Integer>) dummyMap.clone());
+        }
     }
 
 
@@ -563,4 +803,6 @@ public class tab3 extends Fragment {
         }
         return "";
     }
+
+
 }
