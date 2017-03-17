@@ -66,10 +66,10 @@ public class tab3 extends Fragment {
     ArrayList<String> Number_ArrayList = new ArrayList<String>();
     ArrayList<String> Address_ArrayList = new ArrayList<String>();
     ArrayList<String> Pending_ArrayList = new ArrayList<>();
-    HashMap<String, ArrayList<ArrayList<String>>> records = new HashMap<>();
-    HashMap<String, HashMap<String, ArrayList<String>>> StockyearMap = new HashMap<>();
-    HashMap<String, HashMap<String, ArrayList<String>>> RecordyearMap = new HashMap<>();
-    HashMap<String, HashMap<String, Integer>> profit = new HashMap<>();
+    HashMap<String, ArrayList<ArrayList<String>>> records;
+    HashMap<String, HashMap<String, ArrayList<String>>> StockyearMap;
+    HashMap<String, HashMap<String, ArrayList<String>>> RecordyearMap;
+    HashMap<String, HashMap<String, Integer>> profit;
     int count = 0;
     int chartMaxValue = 0, profitMaxValue = 0;
     String thisYear = "";
@@ -121,6 +121,7 @@ public class tab3 extends Fragment {
         leftAxis.setLabelCount(10);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
+
         XAxis xAxis = barchart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         // xAxis.setAxisMinimum(0f);
@@ -143,25 +144,25 @@ public class tab3 extends Fragment {
         barchart2.setMinimumWidth(20);
 
         Legend l2 = barchart2.getLegend();
-        l.setWordWrapEnabled(true);
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
+        l2.setWordWrapEnabled(true);
+        l2.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l2.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l2.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l2.setDrawInside(false);
 
 
         YAxis leftAxis2 = barchart2.getAxisLeft();
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setLabelCount(10);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        leftAxis2.setDrawGridLines(false);
+        leftAxis2.setLabelCount(10);
+        leftAxis2.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
         XAxis xAxis2 = barchart2.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis2.setPosition(XAxis.XAxisPosition.BOTTOM);
         // xAxis.setAxisMinimum(0f);
-        xAxis.setGranularity(0f);
+        xAxis2.setGranularity(0f);
         //xAxis.setAxisMinimum(0f);
-        xAxis.setLabelCount(12);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
+        xAxis2.setLabelCount(12);
+        xAxis2.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
 
@@ -169,7 +170,6 @@ public class tab3 extends Fragment {
             }
         });
         collectData();
-
 
         setData(12, chartMaxValue, profitMaxValue);
 
@@ -197,6 +197,7 @@ public class tab3 extends Fragment {
 
         if (RecordyearMap.isEmpty() == false) {
             if (RecordyearMap.containsKey(thisYear)) {
+
                 for (String month : RecordyearMap.get(thisYear).keySet()) {
 
                     yVals1.add(new BarEntry(Integer.parseInt(month) - 1, Float.parseFloat(RecordyearMap.get(thisYear).get(month).get(0))));
@@ -244,6 +245,7 @@ public class tab3 extends Fragment {
 
         if (profit.isEmpty() == false) {
             if (profit.containsKey(thisYear)) {
+
                 for (String month : profit.get(thisYear).keySet()) {
 
                     yVals2.add(new BarEntry(Integer.parseInt(month) - 1, Float.parseFloat(String.valueOf(profit.get(thisYear).get(month)))));
@@ -261,8 +263,8 @@ public class tab3 extends Fragment {
                 barchart2.getData().getDataSetCount() > 0) {
             set2 = (BarDataSet) barchart2.getData().getDataSetByIndex(0);
             set2.setValues(yVals2);
-            barchart.getData().notifyDataChanged();
-            barchart.notifyDataSetChanged();
+            barchart2.getData().notifyDataChanged();
+            barchart2.notifyDataSetChanged();
         } else {
             set2 = new BarDataSet(yVals2, "The year " + thisYear);
 
@@ -290,6 +292,9 @@ public class tab3 extends Fragment {
     public void collectData() {
 
         records = new HashMap<>();
+        StockyearMap = new HashMap<>();
+        RecordyearMap = new HashMap<>();
+        profit = new HashMap<>();
 
         try {
             db = sh.getReadableDatabase();
