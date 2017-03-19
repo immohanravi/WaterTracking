@@ -19,32 +19,28 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     SQLiteDatabase SQLITEDATABASE;
     SQLiteDatabase CustomerDB;
 
-    static String DATABASE_NAME="WaterTracking";
+    public static final String KEY_ID = "id";
 
+    public static final String TABLE_NAME = "customers";
 
-    public static final String KEY_ID="id";
+    public static final String KEY_Name = "Name";
 
-    public static final String TABLE_NAME="customers";
+    public static final String KEY_Address = "Address";
 
-    public static final String KEY_Name="Name";
-
-    public static final String KEY_Address="Address";
-
-    public static final String KEY_Number="Number";
-    public static final String KEY_Image="Image";
+    public static final String KEY_Number = "Number";
+    public static final String KEY_Image = "Image";
     int stockAvailbale = 0;
 
     @Override
@@ -56,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this,addStock.class);
+                Intent intent = new Intent(MainActivity.this, addStock.class);
                 startActivity(intent);
             }
         });
@@ -68,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()){
+                switch (tab.getPosition()) {
                     case 0: {
 
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -77,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent(getApplicationContext(),addStock.class);
+                                Intent intent = new Intent(getApplicationContext(), addStock.class);
                                 startActivityForResult(intent, 0);
                             }
                         });
@@ -90,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent(getApplicationContext(),newCustomer.class);
+                                Intent intent = new Intent(getApplicationContext(), newCustomer.class);
                                 startActivityForResult(intent, 0);
                             }
                         });
@@ -124,26 +120,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         DBCreate();
-}
-
+    }
 
 
     private void DBCreate() {
-        SQLITEDATABASE = openOrCreateDatabase("WaterTracking", Context.MODE_PRIVATE,null);
+        SQLITEDATABASE = openOrCreateDatabase("WaterTracking", Context.MODE_PRIVATE, null);
         //this.deleteDatabase("customers");
-        CustomerDB = openOrCreateDatabase("customers",Context.MODE_PRIVATE,null);
+        CustomerDB = openOrCreateDatabase("customers", Context.MODE_PRIVATE, null);
         CustomerDB.close();
         //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS stock");
         SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS stock(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATETIME NOT NULL, number_of_cans INTEGER NOT NULL, price INTEGER NOT NULL)");
         //SQLITEDATABASE.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
-        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS "+TABLE_NAME+"("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "+KEY_Name+" TEXT NOT NULL UNIQUE, "+KEY_Address+" TEXT NOT NULL, "+KEY_Number+" INTEGER NOT NULL UNIQUE, "+KEY_Image+" BLOB NOT NULL)");
+        SQLITEDATABASE.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + KEY_Name + " TEXT NOT NULL UNIQUE, " + KEY_Address + " TEXT NOT NULL, " + KEY_Number + " INTEGER NOT NULL UNIQUE, " + KEY_Image + " BLOB NOT NULL)");
         SQLITEDATABASE.close();
         //SQLITEDATABASE.execSQL("INSERT INTO stock (number_of_cans, price) values(200,10)");
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new tab1(), "Main");
+        adapter.addFragment(new tab1(), "Stock");
         adapter.addFragment(new tab2(), "Customers");
         adapter.addFragment(new tab3(), "Profit");
         viewPager.setAdapter(adapter);
@@ -194,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 System.exit(0);
                 return true;
             case R.id.About:
-                Intent intent = new Intent(getApplicationContext(),about.class);
+                Intent intent = new Intent(getApplicationContext(), about.class);
                 startActivity(intent);
             default:
                 return super.onOptionsItemSelected(Item);

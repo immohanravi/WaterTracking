@@ -42,7 +42,7 @@ import java.util.ArrayList;
  */
 public class tab1 extends Fragment {
 
-    TextView stock, availableStock;
+    TextView stock, availableStock, txtDate, txtNoOfCans, txtPrice;
     int stockAvailble = 0;
     EditText searchView;
     Button cancelSearch;
@@ -55,12 +55,14 @@ public class tab1 extends Fragment {
     Cursor cursor;
     stockAdapter ListAdapter;
     ListView listView;
+    int clicked = 0;
     ArrayList<String> ID_ArrayList = new ArrayList<String>();
     ArrayList<String> DATE_ArrayList = new ArrayList<String>();
     ArrayList<String> NO_OF_CANS_ArrayList = new ArrayList<String>();
     ArrayList<String> PRICE_ArrayList = new ArrayList<String>();
     ArrayList<String> Name_ArrayList = new ArrayList<>();
     Snackbar snack;
+
     public tab1() {
         // Required empty public constructor
     }
@@ -70,10 +72,10 @@ public class tab1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tab1, container, false);
-         getActivity().getWindow().setSoftInputMode(
+        getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // Inflate the layout for this fragment
-       snack = Snackbar.make(view, "Available Stock = ", Snackbar.LENGTH_INDEFINITE);
+        snack = Snackbar.make(view, "Available Stock = ", Snackbar.LENGTH_INDEFINITE);
         View Sview = snack.getView();
         TextView tv = (TextView) Sview.findViewById(android.support.design.R.id.snackbar_text);
         tv.setTextColor(ContextCompat.getColor(getContext(), R.color.yellow));
@@ -82,7 +84,45 @@ public class tab1 extends Fragment {
         snack.show();
         listView = (ListView) view.findViewById(R.id.listView);
         listView.setTextFilterEnabled(true);
-
+        txtDate = (TextView) view.findViewById(R.id.txtDate);
+        txtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clicked % 2 == 0) {
+                    Orderby("date", "ASC");
+                    clicked++;
+                } else {
+                    Orderby("date", "DESC");
+                    clicked++;
+                }
+            }
+        });
+        txtNoOfCans = (TextView) view.findViewById(R.id.txtNo_of_cans);
+        txtNoOfCans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clicked % 2 == 0) {
+                    Orderby("number_of_cans", "ASC");
+                    clicked++;
+                } else {
+                    Orderby("number_of_cans", "DESC");
+                    clicked++;
+                }
+            }
+        });
+        txtPrice = (TextView) view.findViewById(R.id.txtPrice);
+        txtPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clicked % 2 == 0) {
+                    Orderby("price", "ASC");
+                    clicked++;
+                } else {
+                    Orderby("price", "DESC");
+                    clicked++;
+                }
+            }
+        });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -100,9 +140,10 @@ public class tab1 extends Fragment {
         listView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-               if(event.getAction() == MotionEvent.ACTION_DOWN){
-                   snack.dismiss();
-               }if(event.getAction() == MotionEvent.ACTION_UP){
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    snack.dismiss();
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
                     snack.show();
                 }
                 return false;
@@ -146,8 +187,8 @@ public class tab1 extends Fragment {
 
         ShowSQLiteDBdata();
         stockAvailble = getAvailableStock();
-        snack.setText("Available Stock = "+stockAvailble);
-       listView.requestFocus();
+        snack.setText("Available Stock = " + stockAvailble);
+        listView.requestFocus();
         return view;
     }
 
@@ -155,7 +196,7 @@ public class tab1 extends Fragment {
     public void onResume() {
         super.onResume();
         stockAvailble = getAvailableStock();
-        snack.setText("Available Stock = "+stockAvailble);
+        snack.setText("Available Stock = " + stockAvailble);
         ShowSQLiteDBdata();
 
     }
@@ -188,7 +229,7 @@ public class tab1 extends Fragment {
         int totalSold = 0;
         SQLITEDATABASE = customerrecords.getWritableDatabase();
         for (String name : Name_ArrayList) {
-            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM " + name.replaceAll(" ",""), null);
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM " + name.replaceAll(" ", ""), null);
             if (cursor.moveToFirst()) {
                 do {
                     totalSold = totalSold + Integer.parseInt(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));
@@ -394,7 +435,7 @@ public class tab1 extends Fragment {
                     intent.putExtras(values);
                     startActivityForResult(intent, 0);
                 } catch (Exception e) {
-                   Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
 
@@ -443,5 +484,49 @@ public class tab1 extends Fragment {
         alert_box.show();
     }
 
+    public void Orderby(String orderBy, String order) {
+        String query = "";
+        if (orderBy.equals("date")) {
+            query = "SELECT * FROM stock ORDER BY date(" + orderBy + ") " + order;
+        } else {
+            query = " SELECT * FROM stock ORDER BY " + orderBy + " " + order;
+        }
+        try {
+            SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+            cursor = SQLITEDATABASE.rawQuery(query, null);
+            ID_ArrayList.clear();
+            DATE_ArrayList.clear();
+            NO_OF_CANS_ArrayList.clear();
+            PRICE_ArrayList.clear();
 
+            if (cursor.moveToFirst()) {
+                do {
+                    ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_ID)));
+
+                    DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Date)));
+
+                    NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Number_Of_Cans)));
+
+                    PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(stockHellper.KEY_Price)));
+
+                } while (cursor.moveToNext());
+            }
+
+            ListAdapter = new stockAdapter(getActivity(),
+
+                    ID_ArrayList,
+                    DATE_ArrayList,
+                    NO_OF_CANS_ArrayList,
+                    PRICE_ArrayList
+
+            );
+
+            listView.setAdapter(ListAdapter);
+
+            cursor.close();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
 }

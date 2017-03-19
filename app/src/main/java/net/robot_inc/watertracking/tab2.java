@@ -295,6 +295,8 @@ public class tab2 extends Fragment {
         }
     }
 
+
+
     public void deleteRow() {
         AlertDialog.Builder alert_box = new AlertDialog.Builder(getContext());
         alert_box.setMessage("Are you Sure, Do you want to Remove this customer from list?\nAll the records with be deleted.");

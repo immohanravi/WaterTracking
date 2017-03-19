@@ -3,6 +3,7 @@ package net.robot_inc.watertracking;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -85,9 +86,12 @@ public class customerDbAdapter extends BaseAdapter {
 
             holder.name = (TextView) child.findViewById(R.id.name);
             holder.address= (TextView) child.findViewById(R.id.Address);
+            holder.address.setTextColor(Color.BLACK);
             holder.number= (TextView) child.findViewById(R.id.tv_phone_number);
+            holder.number.setTextColor(Color.MAGENTA);
             holder.image= (ImageView) child.findViewById(R.id.image);
             holder.amt = (TextView) child.findViewById(R.id.amt);
+            holder.amt.setTextColor(Color.BLACK);
 
             child.setTag(holder);
 
@@ -95,7 +99,7 @@ public class customerDbAdapter extends BaseAdapter {
 
             holder = (Holder) child.getTag();
         }
-        //getImage gImage = new getImage(Image.get(position));
+
         holder.name.setText(Name.get(position));
         holder.address.setText(Address.get(position));
         holder.number.setText(Number.get(position));

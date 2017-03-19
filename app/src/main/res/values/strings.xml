@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">WaterTracking</string>
+    <string name="app_name">WDM App</string>
     <string name="action_settings">Settings</string>
     <string name="hello_blank_fragment" />
-    <string name="copy_right">Copyrights © %1$d</string>
+    <string name="copy_right">Copyrights © 2017</string>
     <string-array name="stock_array">
         <item>date</item>
         <item>number_of_cans</item>

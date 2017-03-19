@@ -23,11 +23,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.robot_inc.watertracking.MainActivity" />
         </activity>
-        <activity android:name=".stockView">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="net.robot_inc.watertracking.MainActivity" />
-        </activity>
         <activity android:name=".updateStock">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -48,9 +43,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="net.robot_inc.watertracking.MainActivity" />
         </activity>
-        <activity android:name=".addRecord" />
         <activity android:name=".updateRecords" />
-        <activity android:name=".about"/>
+        <activity android:name=".addRecord"></activity>
     </application>
 
 </manifest>

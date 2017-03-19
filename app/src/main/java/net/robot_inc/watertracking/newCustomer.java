@@ -134,7 +134,7 @@ public class newCustomer extends AppCompatActivity {
                         nameField.setText("");
                         phoneField.setText("");
                         addressField.setText("");
-                        array = getDefaultImagebyte(R.drawable.person);
+                        array = getDefaultImagebyte(R.drawable.addimage);
                         cusImage.setImageBitmap(BitmapFactory.decodeByteArray(array,0,array.length));
 
 

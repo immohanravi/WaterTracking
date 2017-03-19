@@ -33,6 +33,7 @@ public class viewModifyRecords extends AppCompatActivity {
 
     private ListView listView;
     private Button btnRecordAdd,cancelSearch;
+    TextView txtDate,txtNoOfCans,txtPrice,txtPaid;
     SQLiteDatabase SQLITEDATABASE;
     customerDataHelper SQLITEHELPER;
     customerDataAdapter customerAdapter;
@@ -45,6 +46,7 @@ public class viewModifyRecords extends AppCompatActivity {
     ArrayList<String> NO_OF_CANS_ArrayList = new ArrayList<String>();
     ArrayList<String> PRICE_ArrayList = new ArrayList<String>();
     ArrayList<String> PAID_ArrayList = new ArrayList<String>();
+    int clicked = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,58 @@ public class viewModifyRecords extends AppCompatActivity {
 
 
                 return false;
+            }
+        });
+        txtDate = (TextView) findViewById(R.id.txtDate);
+        txtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clicked%2==0){
+                    Orderby("date","ASC");
+                    clicked++;
+                }else {
+                    Orderby("date","DESC");
+                    clicked++;
+                }
+            }
+        });
+        txtNoOfCans = (TextView) findViewById(R.id.txtNo_of_cans);
+        txtNoOfCans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clicked%2==0){
+                    Orderby("No_of_cans","ASC");
+                    clicked++;
+                }else {
+                    Orderby("No_of_cans","DESC");
+                    clicked++;
+                }
+            }
+        });
+        txtPrice = (TextView) findViewById(R.id.txtPrice);
+        txtPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clicked%2==0){
+                    Orderby("price","ASC");
+                    clicked++;
+                }else {
+                    Orderby("price","DESC");
+                    clicked++;
+                }
+            }
+        });
+        txtPaid = (TextView) findViewById(R.id.txtPaid);
+        txtPaid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clicked%2==0){
+                    Orderby("paid","ASC");
+                    clicked++;
+                }else {
+                    Orderby("paid","DESC");
+                    clicked++;
+                }
             }
         });
         searchView = (EditText) findViewById(R.id.searchrecords);
@@ -311,5 +365,51 @@ public class viewModifyRecords extends AppCompatActivity {
         return "0";
     }
 
+    public void Orderby(String orderBy,String order) {
+        String query = "";
+        if(orderBy.equals("date")){
+            query = "SELECT * FROM "+table_name+" ORDER BY date("+orderBy+") "+order;
+        }else {
+            query = " SELECT * FROM "+table_name+" ORDER BY "+orderBy+" "+order;
+        }
+        try {
+            SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+            cursor = SQLITEDATABASE.rawQuery(query, null);
+            ID_ArrayList.clear();
+            DATE_ArrayList.clear();
+            NO_OF_CANS_ArrayList.clear();
+            PRICE_ArrayList.clear();
+            PAID_ArrayList.clear();
+            if (cursor.moveToFirst()) {
+                do {
+                    ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_ID)));
 
+                    DATE_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Date)));
+
+                    NO_OF_CANS_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));
+
+                    PRICE_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Price)));
+
+                    PAID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_Paid)));
+                } while (cursor.moveToNext());
+            }
+
+
+            customerAdapter = new customerDataAdapter(getApplicationContext(),
+
+                    ID_ArrayList,
+                    DATE_ArrayList,
+                    NO_OF_CANS_ArrayList,
+                    PRICE_ArrayList,
+                    PAID_ArrayList
+
+            );
+
+            listView.setAdapter(customerAdapter);
+            cursor.close();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+    }
 }
