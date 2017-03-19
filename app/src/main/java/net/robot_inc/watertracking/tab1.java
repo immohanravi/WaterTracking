@@ -188,7 +188,7 @@ public class tab1 extends Fragment {
         int totalSold = 0;
         SQLITEDATABASE = customerrecords.getWritableDatabase();
         for (String name : Name_ArrayList) {
-            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM " + name, null);
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM " + name.replaceAll(" ",""), null);
             if (cursor.moveToFirst()) {
                 do {
                     totalSold = totalSold + Integer.parseInt(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));

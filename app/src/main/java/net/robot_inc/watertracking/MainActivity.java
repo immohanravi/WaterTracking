@@ -2,7 +2,9 @@ package net.robot_inc.watertracking;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Icon;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
                         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
                         fab.setVisibility(View.VISIBLE);
+
                         fab.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -190,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 System.exit(0);
                 return true;
+            case R.id.About:
+                Intent intent = new Intent(getApplicationContext(),about.class);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(Item);
         }

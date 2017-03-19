@@ -16,7 +16,9 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +43,8 @@ public class newCustomer extends AppCompatActivity {
     customerDbHelper helper;
     customerDataHelper customerdatahelper;
     Drawable defaultImg;
+    String nameBefore;
+    boolean nameOk = false;
     Button add;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +73,45 @@ public class newCustomer extends AppCompatActivity {
           add = (Button) findViewById(R.id.btn_add);
         helper = new customerDbHelper(getApplicationContext());
         customerdatahelper = new customerDataHelper((getApplicationContext()));
+        nameBefore = "";
+        nameField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                nameBefore = String.valueOf(s);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String value = String.valueOf(s);
+                for(int a = 0;a<value.length();a++){
+                    int ascii = (int) value.charAt(a);
+                    Log.i("ascii value",String.valueOf((value.charAt(a))));
+                    if(ascii >=97 && ascii<=122){
+                        continue;
+                    }else if(ascii >=65 && ascii<=90){
+                        continue;
+                    }else if(ascii == 32){
+                        continue;
+                    }else if(ascii >=48 && ascii<=57){
+                        continue;
+                    }else {
+                        Toast.makeText(getApplicationContext(),"Symbols not allowed",Toast.LENGTH_LONG).show();
+                        nameField.setText(nameBefore);
+
+                    }
+                }
+            }
+        });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 firstLetterCaps = nameField.getText().toString();
                 firstLetterCaps = firstLetterCaps.replaceFirst(String.valueOf(firstLetterCaps.charAt(0)),String.valueOf(firstLetterCaps.charAt(0)).toUpperCase());
 
@@ -90,7 +130,7 @@ public class newCustomer extends AppCompatActivity {
                         statement.execute();
                         statement.close();
                         db.close();
-                        customerdatahelper.createCustomTables(nameField.getText().toString().toLowerCase());
+                        customerdatahelper.createCustomTables(nameField.getText().toString().toLowerCase().replaceAll(" ",""));
                         nameField.setText("");
                         phoneField.setText("");
                         addressField.setText("");

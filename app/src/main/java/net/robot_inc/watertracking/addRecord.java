@@ -43,12 +43,16 @@ public class addRecord extends AppCompatActivity {
         cans = (EditText) findViewById(R.id.et_noofcans);
         amountPaid = (EditText) findViewById(R.id.et_paid);
         table_name = getIntent().getExtras().getString("table_name");
+        Log.i("table_name",table_name);
         addrecord = (Button) findViewById(R.id.btn_addrecord);
         addrecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("strings", cans.getText().toString());
                 AvailableStock = getAvailableStock();
+                if(TextUtils.isEmpty(cans.getText().toString())){
+                    cans.setText("0");
+                }
                 if (Integer.parseInt(cans.getText().toString()) <= AvailableStock) {
                     insertData(dateField.getText().toString(), cans.getText().toString(), price.getText().toString(), amountPaid.getText().toString());
 
@@ -250,7 +254,7 @@ public class addRecord extends AppCompatActivity {
         customerDataHelper cdh = new customerDataHelper(getApplicationContext());
         database = cdh.getWritableDatabase();
         for (String name : Name_ArrayList) {
-            cursor = database.rawQuery("SELECT * FROM " + name, null);
+            cursor = database.rawQuery("SELECT * FROM " + name.replaceAll(" ",""), null);
             if (cursor.moveToFirst()) {
                 do {
                     totalSold = totalSold + Integer.parseInt(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));

@@ -115,7 +115,7 @@ public class updateRecords extends AppCompatActivity {
 
                     } else {
                         if (b == 0) {
-                            Toast.makeText(getApplicationContext(), "Pleae enter the price", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Please enter the price", Toast.LENGTH_LONG).show();
 
                         } else {
                             updateDatabase(a, b, c);
@@ -365,7 +365,7 @@ public class updateRecords extends AppCompatActivity {
         customerDataHelper cdh = new customerDataHelper(getApplicationContext());
         database = cdh.getWritableDatabase();
         for (String name : Name_ArrayList) {
-            cursor = database.rawQuery("SELECT * FROM " + name, null);
+            cursor = database.rawQuery("SELECT * FROM " + name.replaceAll(" ",""), null);
             if (cursor.moveToFirst()) {
                 do {
                     totalSold = totalSold + Integer.parseInt(cursor.getString(cursor.getColumnIndex(customerDataHelper.KEY_No_of_cans)));

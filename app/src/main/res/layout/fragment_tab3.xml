@@ -4,50 +4,70 @@
     android:layout_height="match_parent"
     xmlns:ap="http://schemas.android.com/apk/res-auto"
     tools:context=".tab3">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="No of cans Sold = 0"
-                android:id="@+id/soldCans"
-                android:textSize="24dp"
-                android:padding="5dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Profit this Month = 0"
-                android:id="@+id/profit"
-                android:textSize="24dp"
-                android:padding="5dp"/>
+ <LinearLayout
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:orientation="vertical"
+     android:background="@color/about_instagram_color">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:id="@+id/barchart">
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:layout_marginBottom="5dp"
+         android:background="#ffffff">
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="No of cans Sold = 0"
+             android:id="@+id/soldCans"
+             android:textSize="17dp"
+             android:padding="5dp"
+             android:gravity="center"/>
 
-            </com.github.mikephil.charting.charts.BarChart>
-            <com.github.mikephil.charting.charts.BarChart
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:id="@+id/barchart2">
 
-            </com.github.mikephil.charting.charts.BarChart>
-        </LinearLayout>
+         <com.github.mikephil.charting.charts.BarChart
+             android:layout_width="match_parent"
+             android:layout_height="230dp"
+             android:id="@+id/barchart">
 
-    </ScrollView>
+         </com.github.mikephil.charting.charts.BarChart>
 
 
 
-</RelativeLayout>
+     </LinearLayout>
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:orientation="vertical"
+         android:background="#ffffff">
+
+
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Profit this Month = 0"
+             android:id="@+id/profit"
+             android:textSize="17dp"
+             android:padding="5dp"
+             android:gravity="center"/>
+
+         <com.github.mikephil.charting.charts.BarChart
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@+id/barchart2">
+         </com.github.mikephil.charting.charts.BarChart>
+
+     </LinearLayout>
+
+ </LinearLayout>
+
+
+
+
+
+
+
     <!-- TODO: Update blank fragment layout -->
 
 </FrameLayout>

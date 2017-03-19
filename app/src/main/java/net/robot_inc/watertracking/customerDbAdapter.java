@@ -99,8 +99,9 @@ public class customerDbAdapter extends BaseAdapter {
         holder.name.setText(Name.get(position));
         holder.address.setText(Address.get(position));
         holder.number.setText(Number.get(position));
+
         holder.image.setImageBitmap(Image.get(position));
-        holder.amt.setText(String.valueOf(pendingAmount.get(Name.get(position))));
+        holder.amt.setText("Pending Money : "+String.valueOf(pendingAmount.get(Name.get(position))));
         Log.i("name",Name.get(position));
 
         /*AsyncTask<byte[], Void, Bitmap> map = gImage.execute();

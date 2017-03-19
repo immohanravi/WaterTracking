@@ -115,7 +115,7 @@ public class customerDetails extends AppCompatActivity{
                 db = helper.getWritableDatabase();
                 db.execSQL("UPDATE customers SET Name ='"+firstLetterCaps+"' WHERE id='"+values.getString("id")+"'");
                 customerdatahelper = new customerDataHelper(getApplicationContext());
-                customerdatahelper.alterTable(values.getString("name"),firstLetterCaps.toLowerCase());
+                customerdatahelper.alterTable(values.getString("name"),firstLetterCaps.toLowerCase().replaceAll(" ",""));
                 updated = true;
                 Log.i("update","updated Name");
             }catch (Exception e) {

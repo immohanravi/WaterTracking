@@ -9,7 +9,9 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -24,8 +27,14 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -59,6 +68,7 @@ public class tab3 extends Fragment {
     protected String[] dMonths = new String[]{
             "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
     public BarChart barchart, barchart2;
+
     ArrayList<String> Stock_DATE_ArrayList = new ArrayList<String>();
     ArrayList<String> Stock_NO_OF_CANS_ArrayList = new ArrayList<String>();
     ArrayList<String> Stock_PRICE_ArrayList = new ArrayList<String>();
@@ -97,6 +107,8 @@ public class tab3 extends Fragment {
         minYear = Integer.parseInt(thisYear);
         soldcans = (TextView) view.findViewById(R.id.soldCans);
         txtprofit = (TextView) view.findViewById(R.id.profit);
+        StockyearMap = new HashMap<>();
+        RecordyearMap = new HashMap<>();
         sh = new stockHellper(getContext());
         cdh = new customerDataHelper(getContext());
         ch = new customerDbHelper(getContext());
@@ -107,6 +119,7 @@ public class tab3 extends Fragment {
         barchart.setDrawBarShadow(true);
         barchart.setHighlightFullBarEnabled(true);
         barchart.setMinimumWidth(20);
+        barchart.animate();
 
         Legend l = barchart.getLegend();
         l.setWordWrapEnabled(true);
@@ -118,7 +131,8 @@ public class tab3 extends Fragment {
 
         YAxis leftAxis = barchart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
-        leftAxis.setLabelCount(10);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setLabelCount(5);
         leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
 
@@ -135,6 +149,7 @@ public class tab3 extends Fragment {
                 return mMonths[(int) value];
             }
         });
+
         barchart2 = (BarChart) view.findViewById(R.id.barchart2);
         barchart2.getDescription().setEnabled(false);
         barchart2.setBackgroundColor(Color.WHITE);
@@ -142,6 +157,7 @@ public class tab3 extends Fragment {
         barchart2.setDrawBarShadow(true);
         barchart2.setHighlightFullBarEnabled(true);
         barchart2.setMinimumWidth(20);
+        barchart2.animate();
 
         Legend l2 = barchart2.getLegend();
         l2.setWordWrapEnabled(true);
@@ -153,8 +169,10 @@ public class tab3 extends Fragment {
 
         YAxis leftAxis2 = barchart2.getAxisLeft();
         leftAxis2.setDrawGridLines(false);
-        leftAxis2.setLabelCount(10);
+        leftAxis2.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis2.setLabelCount(5);
         leftAxis2.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
 
         XAxis xAxis2 = barchart2.getXAxis();
         xAxis2.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -169,10 +187,12 @@ public class tab3 extends Fragment {
                 return mMonths[(int) value];
             }
         });
+
         collectData();
 
         setData(12, chartMaxValue, profitMaxValue);
-
+        soldcans.setText("No of cans Sold this Month = "+RecordyearMap.get(thisYear).get(thisMonth).get(0));
+        txtprofit.setText("Profit this Month = "+profit.get(thisYear).get(thisMonth));
         return view;
     }
 
@@ -180,6 +200,9 @@ public class tab3 extends Fragment {
     public void onResume() {
         super.onResume();
         collectData();
+        soldcans.setText("No of cans Sold this Month = "+RecordyearMap.get(thisYear).get(thisMonth).get(0));
+        txtprofit.setText("Profit this Month = "+profit.get(thisYear).get(thisMonth));
+
         setData(12, chartMaxValue, profitMaxValue);
     }
 
@@ -214,11 +237,13 @@ public class tab3 extends Fragment {
         if (barchart.getData() != null &&
                 barchart.getData().getDataSetCount() > 0) {
             set1 = (BarDataSet) barchart.getData().getDataSetByIndex(0);
+            set1.setDrawValues(true);
+            set1.setHighLightAlpha(255);
             set1.setValues(yVals1);
             barchart.getData().notifyDataChanged();
             barchart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(yVals1, "The year " + thisYear);
+            set1 = new BarDataSet(yVals1, "No of Cans sold for the year " + thisYear);
 
             //set1.setDrawIcons(true);
 
@@ -234,6 +259,7 @@ public class tab3 extends Fragment {
 
             barchart.setData(data);
         }
+
 
         ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
 
@@ -262,15 +288,17 @@ public class tab3 extends Fragment {
         if (barchart2.getData() != null &&
                 barchart2.getData().getDataSetCount() > 0) {
             set2 = (BarDataSet) barchart2.getData().getDataSetByIndex(0);
+            set2.setDrawValues(true);
+            set2.setHighLightAlpha(255);
             set2.setValues(yVals2);
             barchart2.getData().notifyDataChanged();
             barchart2.notifyDataSetChanged();
         } else {
-            set2 = new BarDataSet(yVals2, "The year " + thisYear);
+            set2 = new BarDataSet(yVals2, "Profit for the year " + thisYear);
 
             //set1.setDrawIcons(true);
 
-            set2.setColors(ColorTemplate.COLORFUL_COLORS);
+            set2.setColors(ColorTemplate.JOYFUL_COLORS);
 
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
             dataSets.add(set2);
@@ -292,8 +320,8 @@ public class tab3 extends Fragment {
     public void collectData() {
 
         records = new HashMap<>();
-        StockyearMap = new HashMap<>();
-        RecordyearMap = new HashMap<>();
+        RecordyearMap.clear();
+        StockyearMap.clear();
         profit = new HashMap<>();
 
         try {
@@ -357,7 +385,7 @@ public class tab3 extends Fragment {
             db = cdh.getWritableDatabase();
             for (String name : Name_ArrayList) {
                 arrays.clear();
-                cursor = db.rawQuery("SELECT * FROM " + name, null);
+                cursor = db.rawQuery("SELECT * FROM " + name.replaceAll(" ", ""), null);
                 if (cursor.moveToFirst()) {
                     do {
                         values.clear();
@@ -694,7 +722,8 @@ public class tab3 extends Fragment {
                             if (RecordyearMap.get(year).containsKey(month)) {
 
                                 presentStock = pending;
-                                pending = pending - Integer.parseInt(RecordyearMap.get(year).get(month).get(0));;
+                                pending = pending - Integer.parseInt(RecordyearMap.get(year).get(month).get(0));
+                                ;
 
                                 dummy.add(String.valueOf(presentStock));
                                 dummy.add(String.valueOf(presentAverage));
@@ -809,5 +838,10 @@ public class tab3 extends Fragment {
         return "";
     }
 
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        collectData();
+        setData(12, chartMaxValue, profitMaxValue);
+    }
 }

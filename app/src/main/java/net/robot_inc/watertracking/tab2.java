@@ -126,7 +126,7 @@ public class tab2 extends Fragment {
                 customerName = ListAdapter.getName(position);
                 values = new Bundle();
                 values.putString("id", ListAdapter.getId(position));
-                values.putString("name", ListAdapter.getName(position));
+                values.putString("name", ListAdapter.getName(position).replaceAll(" ",""));
                 values.putString("address", ListAdapter.getAddress(position));
                 values.putString("number", ListAdapter.getNumber(position));
                 values.putByteArray("image", Image_ArrayList.get(position));
@@ -255,6 +255,7 @@ public class tab2 extends Fragment {
         inflater.inflate(R.menu.customer_context_menu, menu);
 
 
+
     }
 
     @Override
@@ -275,7 +276,7 @@ public class tab2 extends Fragment {
 
             case R.id.viewRecords: {
                 Intent intent = new Intent(getActivity(), viewModifyRecords.class);
-                intent.putExtra("table_name", values.getString("name").toLowerCase());
+                intent.putExtra("table_name", values.getString("name").toLowerCase().replaceAll(" ",""));
                 startActivity(intent);
                 return true;
             }
@@ -304,7 +305,7 @@ public class tab2 extends Fragment {
                     SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
                     SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='" + values.getString("id") + "'");
                     customerDataHelper = new customerDataHelper(getContext());
-                    customerDataHelper.dropTable(values.getString("name").toLowerCase());
+                    customerDataHelper.dropTable(values.getString("name").toLowerCase().replaceAll(" ",""));
 
                     ShowSQLiteDBdata();
                     Toast.makeText(getContext(), "Successfully Deleted the data", Toast.LENGTH_SHORT).show();
@@ -338,7 +339,7 @@ public class tab2 extends Fragment {
         try {
             for (String name : Name_ArrayList) {
                 customerDataHelper = new customerDataHelper(getContext());
-                pendingAmount.put(name, customerDataHelper.getPendingAmount(name));
+                pendingAmount.put(name, customerDataHelper.getPendingAmount(name.replaceAll(" ","")));
             }
         } catch (Exception e) {
             Toast.makeText(getContext(), "tab 2 \n"+e.getMessage(), Toast.LENGTH_LONG).show();

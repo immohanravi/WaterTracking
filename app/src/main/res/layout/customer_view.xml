@@ -26,46 +26,49 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="75dip"
-        android:paddingBottom="10dip"
+        android:paddingBottom="8dip"
         android:text="Full Name"
         android:textColor="#040404"
-        android:textSize="20sp"
+        android:textSize="16sp"
+        android:paddingTop="5dp"
         android:textStyle="bold"
-        android:typeface="sans"/>
+        android:typeface="sans"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:layout_toEndOf="@+id/thumbnail" />
 
     <TextView
         android:id="@+id/tv_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/name"
-        android:layout_below="@id/name"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="5dip"
+        android:paddingTop="5dp"
         android:text="Phone Number"
         android:textColor="#343434"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:layout_below="@+id/name"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:layout_toEndOf="@+id/thumbnail" />
 
     <TextView
         android:text="Pending Amount : 0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/amt"
         android:layout_alignBottom="@+id/tv_phone_number"
-        android:layout_toRightOf="@+id/tv_phone_number"
-        android:layout_toEndOf="@+id/tv_phone_number"
-        android:layout_marginLeft="36dp"
-        android:layout_marginStart="36dp"
-        android:id="@+id/amt" />
+        android:layout_alignLeft="@+id/Address"
+        android:layout_alignStart="@+id/Address" />
 
     <TextView
         android:text="Address :"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Address"
-        android:layout_above="@+id/tv_phone_number"
-        android:layout_alignLeft="@+id/amt"
-        android:layout_alignStart="@+id/amt" />
+        android:layout_alignBaseline="@+id/name"
+        android:layout_alignBottom="@+id/name"
+        android:layout_toRightOf="@+id/tv_phone_number"
+        android:layout_toEndOf="@+id/tv_phone_number"
+        android:layout_marginLeft="35dp"
+        android:layout_marginStart="35dp" />
 
 
 
