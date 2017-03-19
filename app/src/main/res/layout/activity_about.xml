@@ -20,7 +20,7 @@
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif"
-        android:text="Water Distributor Maintanance app"
+        android:text="Water Distributor Management app"
         android:textColor="#fff"
         android:textSize="20dp"
         android:textStyle="bold"
@@ -45,7 +45,7 @@
         android:textSize="15dp"
         android:textColor="#fff"
 
-        android:text="This Application made for mineral water distributors \nto track and maintain their Records of customers and profit in your business." />
+        android:text="This Application made for mineral water distributors \nto track and manage their Records of customers and profit in their business." />
 
     <TextView
         android:id="@+id/textView8"
