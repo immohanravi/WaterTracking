@@ -45,6 +45,7 @@
         </activity>
         <activity android:name=".updateRecords" />
         <activity android:name=".addRecord"></activity>
+        <activity android:name=".about"></activity>
     </application>
 
 </manifest>

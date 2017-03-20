@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -109,6 +110,7 @@ public class tab3 extends Fragment {
         txtprofit = (TextView) view.findViewById(R.id.profit);
         StockyearMap = new HashMap<>();
         RecordyearMap = new HashMap<>();
+        profit = new HashMap<>();
         sh = new stockHellper(getContext());
         cdh = new customerDataHelper(getContext());
         ch = new customerDbHelper(getContext());
@@ -191,8 +193,14 @@ public class tab3 extends Fragment {
         collectData();
 
         setData(12, chartMaxValue, profitMaxValue);
-        soldcans.setText("No of cans Sold this Month = "+RecordyearMap.get(thisYear).get(thisMonth).get(0));
-        txtprofit.setText("Profit this Month = "+profit.get(thisYear).get(thisMonth));
+        if(!RecordyearMap.isEmpty() || !profit.isEmpty()){
+            soldcans.setText("No of cans Sold this Month = "+RecordyearMap.get(thisYear).get(thisMonth).get(0));
+            txtprofit.setText("Profit this Month = "+profit.get(thisYear).get(thisMonth));
+        }else {
+            soldcans.setText("No of cans Sold this Month = 0");
+            txtprofit.setText("Profit this Month = 0");
+        }
+
         return view;
     }
 
@@ -200,8 +208,13 @@ public class tab3 extends Fragment {
     public void onResume() {
         super.onResume();
         collectData();
-        soldcans.setText("No of cans Sold this Month = "+RecordyearMap.get(thisYear).get(thisMonth).get(0));
-        txtprofit.setText("Profit this Month = "+profit.get(thisYear).get(thisMonth));
+        if(!RecordyearMap.isEmpty() || !profit.isEmpty()){
+            soldcans.setText("No of cans Sold this Month = "+RecordyearMap.get(thisYear).get(thisMonth).get(0));
+            txtprofit.setText("Profit this Month = "+profit.get(thisYear).get(thisMonth));
+        }else {
+            soldcans.setText("No of cans Sold this Month = 0");
+            txtprofit.setText("Profit this Month = 0");
+        }
 
         setData(12, chartMaxValue, profitMaxValue);
     }
@@ -322,7 +335,7 @@ public class tab3 extends Fragment {
         records = new HashMap<>();
         RecordyearMap.clear();
         StockyearMap.clear();
-        profit = new HashMap<>();
+        profit.clear();
 
         try {
             db = sh.getReadableDatabase();
