@@ -157,6 +157,7 @@ public class addRecord extends AppCompatActivity {
                         cans.setText("");
                         price.setText("");
                         amountPaid.setText("");
+                        finish();
 
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -179,6 +180,7 @@ public class addRecord extends AppCompatActivity {
                     cans.setText("");
                     price.setText("");
                     amountPaid.setText("");
+                    finish();
 
                 } catch (Exception e) {
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();

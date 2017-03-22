@@ -40,6 +40,7 @@ public class viewModifyRecords extends AppCompatActivity {
     EditText searchView;
     Bundle values;
     String table_name = "";
+    String realname= "";
     Cursor cursor;
     ArrayList<String> ID_ArrayList = new ArrayList<String>();
     ArrayList<String> DATE_ArrayList = new ArrayList<String>();
@@ -52,9 +53,10 @@ public class viewModifyRecords extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_modify_records);
-        table_name = getIntent().getExtras().getString("table_name");
+        table_name = getIntent().getExtras().getString("name");
+        realname = getIntent().getExtras().getString("realname");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setTitle("View Records");
+        getSupportActionBar().setTitle(realname+" - Records");
         SQLITEHELPER = new customerDataHelper(getApplicationContext());
         listView=(ListView) findViewById(R.id.tablelayout);
         btnRecordAdd = (Button) findViewById(R.id.btnRecordAdd);
@@ -62,7 +64,7 @@ public class viewModifyRecords extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), addRecord.class);
-                intent.putExtra("table_name",getIntent().getExtras().getString("table_name"));
+                intent.putExtra("table_name",getIntent().getExtras().getString("name"));
 
                 startActivity(intent);
             }
@@ -79,6 +81,7 @@ public class viewModifyRecords extends AppCompatActivity {
                 values.putString("price",customerAdapter.getPrice(position));
                 values.putString("paid",customerAdapter.getPaid(position));
                 values.putString("name",table_name);
+                values.putString("realname",getIntent().getExtras().getString("realname"));
 
                 //view.setBackgroundColor(Color.MAGENTA);
 

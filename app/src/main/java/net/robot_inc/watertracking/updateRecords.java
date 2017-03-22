@@ -31,6 +31,7 @@ public class updateRecords extends AppCompatActivity {
     String Smonth = "";
     String Sdate = "";
     String table_name;
+    String realname;
     int year;
     int month;
     int date;
@@ -43,7 +44,7 @@ public class updateRecords extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.update_records);
-        getSupportActionBar().setTitle("update records");
+
 
         dh = new customerDataHelper(getApplicationContext());
         datefield = (EditText) findViewById(R.id.etdate);
@@ -55,6 +56,8 @@ public class updateRecords extends AppCompatActivity {
         presentStock = Integer.parseInt(values.getString("cans"));
         AvailableStock = getAvailableStock() + presentStock;
         table_name = values.getString("name");
+        realname = values.getString("realname");
+        getSupportActionBar().setTitle(realname+" - update records");
         myCalendar = Calendar.getInstance();
         datefield.setOnClickListener(new View.OnClickListener() {
             @Override

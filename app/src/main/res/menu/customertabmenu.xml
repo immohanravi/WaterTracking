@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:id="@+id/sortName"
+        android:title="Sort by Name"/>
+
+    <item android:id="@+id/sortPending"
+        android:title="Sort By Pending Amount"/>
+
+</menu>

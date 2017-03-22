@@ -112,14 +112,15 @@ public class newCustomer extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                firstLetterCaps = nameField.getText().toString();
-                firstLetterCaps = firstLetterCaps.replaceFirst(String.valueOf(firstLetterCaps.charAt(0)),String.valueOf(firstLetterCaps.charAt(0)).toUpperCase());
-
                 if(TextUtils.isEmpty(nameField.getText().toString())||TextUtils.isEmpty(addressField.getText().toString())||TextUtils.isEmpty(phoneField.getText().toString())){
                     Toast.makeText(getApplicationContext(),"All fields required",Toast.LENGTH_LONG).show();
 
                 }else {
                     try{
+
+                        firstLetterCaps = nameField.getText().toString();
+                        firstLetterCaps = firstLetterCaps.replaceFirst(String.valueOf(firstLetterCaps.charAt(0)),String.valueOf(firstLetterCaps.charAt(0)).toUpperCase());
+
                         Log.i("customer","inside try");
                         db = helper.getWritableDatabase();
                         SQLiteStatement statement = db.compileStatement("INSERT INTO customers(Name,Address,Number,Image) VALUES(?,?,?,?)");

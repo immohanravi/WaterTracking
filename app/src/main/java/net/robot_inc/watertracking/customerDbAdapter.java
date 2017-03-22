@@ -1,5 +1,6 @@
 package net.robot_inc.watertracking;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -105,8 +106,14 @@ public class customerDbAdapter extends BaseAdapter {
         holder.number.setText(Number.get(position));
 
         holder.image.setImageBitmap(Image.get(position));
-        holder.amt.setText("Pending Money : "+String.valueOf(pendingAmount.get(Name.get(position))));
-        Log.i("name",Name.get(position));
+        if (pendingAmount.get(Name.get(position))<=0){
+            holder.amt.setText("Pending Money : "+String.valueOf(pendingAmount.get(Name.get(position))));
+            holder.amt.setTextColor(Color.BLACK);
+        } else {
+            holder.amt.setText("Pending Money : "+String.valueOf(pendingAmount.get(Name.get(position))));
+            holder.amt.setTextColor(Color.RED);
+        }
+                Log.i("name",Name.get(position));
 
         /*AsyncTask<byte[], Void, Bitmap> map = gImage.execute();
         try {

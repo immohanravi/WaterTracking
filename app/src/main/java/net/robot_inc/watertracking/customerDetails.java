@@ -43,7 +43,7 @@ public class customerDetails extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customer_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setTitle("View/Update");
+        getSupportActionBar().setTitle(getIntent().getExtras().getString("realname")+" - View/Update");
         helper = new customerDbHelper(getApplicationContext());
         update = (Button) findViewById(R.id.btnUpdate);
 
@@ -71,13 +71,13 @@ public class customerDetails extends AppCompatActivity{
             }
         });
         values = getIntent().getExtras();
-        name.setText(values.getString("name"));
+        name.setText(values.getString("realname"));
         address.setText(values.getString("address"));
         number.setText(values.getString("number"));
-       Bitmap yourSelectedImage = BitmapFactory.decodeByteArray(values.getByteArray("image"),0,values.getByteArray("image").length);
-       ByteArrayOutputStream stream = new ByteArrayOutputStream();
-       yourSelectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-       array = stream.toByteArray();
+      // Bitmap yourSelectedImage = BitmapFactory.decodeByteArray(values.getByteArray("image"),0,values.getByteArray("image").length);
+       //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+       //yourSelectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+       array = values.getByteArray("image");
         customerPhoto.setImageBitmap(BitmapFactory.decodeByteArray(array,0,array.length));
 
     }
@@ -105,65 +105,76 @@ public class customerDetails extends AppCompatActivity{
     public void updateDatabase(){
         Log.i("update","updating database");
         Boolean updated = false;
-        firstLetterCaps = name.getText().toString();
-        firstLetterCaps = firstLetterCaps.replaceFirst(String.valueOf(firstLetterCaps.charAt(0)),String.valueOf(firstLetterCaps.charAt(0)).toUpperCase());
+        if(TextUtils.isEmpty(name.getText().toString())||TextUtils.isEmpty(address.getText().toString())||TextUtils.isEmpty(number.getText().toString())) {
+            Toast.makeText(getApplicationContext(), "All fields required", Toast.LENGTH_LONG).show();
+        }else {
+            firstLetterCaps = name.getText().toString();
+            firstLetterCaps = firstLetterCaps.replaceFirst(String.valueOf(firstLetterCaps.charAt(0)),String.valueOf(firstLetterCaps.charAt(0)).toUpperCase());
 
-        if((firstLetterCaps.equals(values.getString("name")) == false)){
+            if((firstLetterCaps.equals(values.getString("realname")) == false)&&(firstLetterCaps.equals(values.getString("name"))==false)){
 
 
-            try {
-                db = helper.getWritableDatabase();
-                db.execSQL("UPDATE customers SET Name ='"+firstLetterCaps+"' WHERE id='"+values.getString("id")+"'");
-                customerdatahelper = new customerDataHelper(getApplicationContext());
-                customerdatahelper.alterTable(values.getString("name"),firstLetterCaps.toLowerCase().replaceAll(" ",""));
-                updated = true;
+                try {
+                    db = helper.getWritableDatabase();
+                    db.execSQL("UPDATE customers SET Name ='"+firstLetterCaps+"' WHERE id='"+values.getString("id")+"'");
+                    customerdatahelper = new customerDataHelper(getApplicationContext());
+                    customerdatahelper.alterTable(values.getString("name"),firstLetterCaps.toLowerCase().replaceAll(" ",""));
+                    updated = true;
+                    values.putString("name",firstLetterCaps.toLowerCase().replaceAll(" ",""));
+                    values.putString("realname",firstLetterCaps);
+
+                    Log.i("update","updated Name");
+                }catch (Exception e) {
+                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            if(address.getText().toString().equals(values.getString("address"))==false){
+                String uAddress = address.getText().toString();
+                try {
+                    db = helper.getWritableDatabase();
+                    db.execSQL("UPDATE customers SET Address ='"+uAddress+"' WHERE id='"+values.getString("id")+"'");
+                    updated = true;
+                    values.putString("address",uAddress);
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+
                 Log.i("update","updated Name");
-            }catch (Exception e) {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
             }
+            if (number.getText().toString().equals(values.getString("number")) == false){
+                Long uNumber = Long.parseLong(number.getText().toString());
+                try {
+                    db = helper.getWritableDatabase();
+                    db.execSQL("UPDATE customers SET Number ='"+uNumber+"' WHERE id='"+values.getString("id")+"'");
+                    updated = true;
+                    values.putString("number",String.valueOf(uNumber));
+                    Log.i("update","updated uNumber");
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
 
-        }
-        if(address.getText().toString().equals(values.getString("address"))==false){
-            String uAddress = address.getText().toString();
-            try {
-                db = helper.getWritableDatabase();
-                db.execSQL("UPDATE customers SET Address ='"+uAddress+"' WHERE id='"+values.getString("id")+"'");
-                updated = true;
-            }catch (Exception e){
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
             }
+            if (Arrays.equals(array,values.getByteArray("image"))==false){
 
-            Log.i("update","updated Name");
-        }
-        if (number.getText().toString().equals(values.getString("number")) == false){
-            Long uNumber = Long.parseLong(number.getText().toString());
-            try {
-                db = helper.getWritableDatabase();
-                db.execSQL("UPDATE customers SET Number ='"+uNumber+"' WHERE id='"+values.getString("id")+"'");
-                updated = true;
-                Log.i("update","updated uNumber");
-            }catch (Exception e){
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                try {
+                    db = helper.getWritableDatabase();
+                    SQLiteStatement statement = db.compileStatement("UPDATE customers SET Image = ? WHERE id = ?");
+                    //db.execSQL("UPDATE customers SET Image ='"+array+"' WHERE id='"+values.getString("id")+"'");
+                    statement.bindBlob(1,array);
+                    statement.bindString(2,values.getString("id"));
+                    statement.execute();
+                    statement.close();
+                    updated = true;
+                    values.putByteArray("image",array);
+                    Log.i("update","updated Image");
+                }catch (Exception e){
+                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+
             }
-
         }
-        if (Arrays.equals(array,values.getByteArray("image"))==false){
 
-            try {
-                db = helper.getWritableDatabase();
-                SQLiteStatement statement = db.compileStatement("UPDATE customers SET Image = ? WHERE id = ?");
-                //db.execSQL("UPDATE customers SET Image ='"+array+"' WHERE id='"+values.getString("id")+"'");
-                statement.bindBlob(1,array);
-                statement.bindString(2,values.getString("id"));
-                statement.execute();
-                statement.close();
-                updated = true;
-                Log.i("update","updated Image");
-            }catch (Exception e){
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-
-        }
         Log.i("check",String.valueOf(updated));
         if(updated != true){
             Toast.makeText(getApplicationContext(),"nothing to update",Toast.LENGTH_SHORT).show();

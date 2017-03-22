@@ -85,6 +85,7 @@ public class addStock extends AppCompatActivity {
                 dateField.setText("");
                 cans.setText("");
                 price.setText("");
+                finish();
 
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();

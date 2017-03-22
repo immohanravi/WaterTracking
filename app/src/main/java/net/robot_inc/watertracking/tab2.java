@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -39,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.robot_inc.watertracking.R;
@@ -47,6 +49,7 @@ import java.net.InterfaceAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.robot_inc.watertracking.customerDataHelper;
@@ -58,7 +61,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class tab2 extends Fragment {
 
-    Button loadImage,cancelBtn;
+    Button loadImage, cancelBtn;
     HashMap<String, Integer> pendingAmount = new HashMap<>();
     Bundle values;
     Intent intent;
@@ -89,7 +92,9 @@ public class tab2 extends Fragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_tab2, container, false);
-        /*
+
+        // Creating adapter for spinner
+               /*
         iv = (ImageView) view.findViewById(R.id.imageView2);
         iv = (ImageView) view.findViewById(R.id.imageView2);
         iv.setOnClickListener(new View.OnClickListener() {
@@ -126,7 +131,8 @@ public class tab2 extends Fragment {
                 customerName = ListAdapter.getName(position);
                 values = new Bundle();
                 values.putString("id", ListAdapter.getId(position));
-                values.putString("name", ListAdapter.getName(position).replaceAll(" ",""));
+                values.putString("name", ListAdapter.getName(position).replaceAll(" ", ""));
+                values.putString("realname", ListAdapter.getName(position));
                 values.putString("address", ListAdapter.getAddress(position));
                 values.putString("number", ListAdapter.getNumber(position));
                 values.putByteArray("image", Image_ArrayList.get(position));
@@ -134,7 +140,26 @@ public class tab2 extends Fragment {
                 return false;
             }
         });
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                customerName = ListAdapter.getName(position);
+                values = new Bundle();
+                values.putString("id", ListAdapter.getId(position));
+                values.putString("name", ListAdapter.getName(position).replaceAll(" ", ""));
+                values.putString("realname", ListAdapter.getName(position));
+                values.putString("address", ListAdapter.getAddress(position));
+                values.putString("number", ListAdapter.getNumber(position));
+                values.putByteArray("image", Image_ArrayList.get(position));
+                try {
+                    Intent intent = new Intent(getActivity(), viewModifyRecords.class);
+                    intent.putExtras(values);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         registerForContextMenu(listView);
         SQLITEHELPER = new customerDbHelper(getActivity());
 
@@ -255,7 +280,6 @@ public class tab2 extends Fragment {
         inflater.inflate(R.menu.customer_context_menu, menu);
 
 
-
     }
 
     @Override
@@ -267,19 +291,14 @@ public class tab2 extends Fragment {
                     intent.putExtras(values);
                     startActivity(intent);
                 } catch (Exception e) {
-                   Toast.makeText(getContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
 
                 return true;
             }
 
-            case R.id.viewRecords: {
-                Intent intent = new Intent(getActivity(), viewModifyRecords.class);
-                intent.putExtra("table_name", values.getString("name").toLowerCase().replaceAll(" ",""));
-                startActivity(intent);
-                return true;
-            }
+
             case R.id.call: {
                 Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + values.getString("number")));
                 startActivityForResult(callIntent, 1);
@@ -289,12 +308,10 @@ public class tab2 extends Fragment {
                 deleteRow();
                 return true;
             }
-
             default:
                 return false;
         }
     }
-
 
 
     public void deleteRow() {
@@ -307,7 +324,7 @@ public class tab2 extends Fragment {
                     SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
                     SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='" + values.getString("id") + "'");
                     customerDataHelper = new customerDataHelper(getContext());
-                    customerDataHelper.dropTable(values.getString("name").toLowerCase().replaceAll(" ",""));
+                    customerDataHelper.dropTable(values.getString("name").toLowerCase().replaceAll(" ", ""));
 
                     ShowSQLiteDBdata();
                     Toast.makeText(getContext(), "Successfully Deleted the data", Toast.LENGTH_SHORT).show();
@@ -341,29 +358,31 @@ public class tab2 extends Fragment {
         try {
             for (String name : Name_ArrayList) {
                 customerDataHelper = new customerDataHelper(getContext());
-                pendingAmount.put(name, customerDataHelper.getPendingAmount(name.replaceAll(" ","")));
+                pendingAmount.put(name, customerDataHelper.getPendingAmount(name.replaceAll(" ", "")));
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "tab 2 \n"+e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "tab 2 \n" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
 
     }
-    public void filterCustomerDatabase(String filterText){
+
+    public void filterCustomerDatabase(String filterText) {
         SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
         int position = 0;
-        Cursor cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers",null);;
-        try{
+        Cursor cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers", null);
+        ;
+        try {
             Long x = Long.parseLong(filterText);
-            position  = 2;
-        }catch (NumberFormatException e){
+            position = 2;
+        } catch (NumberFormatException e) {
 
-                    position = 1;
+            position = 1;
         }
-        if(position == 1){
-            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers WHERE Name LIKE \'%"+filterText+"%\' OR Address LIKE \'%"+filterText+"%\'",null);
-        }else if (position == 2){
-            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers WHERE Number  LIKE \'%"+filterText+"%\'",null);
+        if (position == 1) {
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers WHERE Name LIKE \'%" + filterText + "%\' OR Address LIKE \'%" + filterText + "%\'", null);
+        } else if (position == 2) {
+            cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers WHERE Number  LIKE \'%" + filterText + "%\'", null);
         }
 
         ID_ArrayList.clear();
@@ -405,4 +424,5 @@ public class tab2 extends Fragment {
         SQLITEDATABASE.close();
 
     }
+
 }
