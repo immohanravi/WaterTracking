@@ -24,6 +24,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -109,6 +110,7 @@ public class tab2 extends Fragment {
         });
         */
         listView = (ListView) view.findViewById(R.id.customer_list);
+
         listView.setTextFilterEnabled(true);
         /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -125,6 +127,14 @@ public class tab2 extends Fragment {
 
             }
         });*/
+        listView.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                Toast.makeText(getContext(),String.valueOf(event.getAction()),Toast.LENGTH_LONG).show();
+
+                return false;
+            }
+        });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
