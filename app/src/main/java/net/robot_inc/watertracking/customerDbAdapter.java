@@ -8,10 +8,12 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class customerDbAdapter extends BaseAdapter {
+
     Holder holder;
     Context context;
     ArrayList<String> userID;
@@ -34,14 +37,15 @@ public class customerDbAdapter extends BaseAdapter {
     ArrayList<Bitmap> Image;
     HashMap<String,Integer> pendingAmount;
     public customerDbAdapter(
-            Context context2,
+           Context context2,
             ArrayList<String> id,
             ArrayList<String> Name,
             ArrayList<String> Address,
             ArrayList<String> Number,
             ArrayList<Bitmap> Image,
-            HashMap<String,Integer> pendingAmount)
+            HashMap<String, Integer> pendingAmount)
     {
+
 
         this.context = context2;
         this.userID = id;
@@ -51,6 +55,7 @@ public class customerDbAdapter extends BaseAdapter {
         this.Image = Image;
         this.pendingAmount = pendingAmount;
     }
+
     public String getId(int position){ return userID.get(position);}
     public String getName(int position){ return Name.get(position);}
     public String getAddress(int position){ return Address.get(position);}
@@ -74,6 +79,7 @@ public class customerDbAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View child, ViewGroup parent) {
+
         Holder holder;
 
         LayoutInflater layoutInflater;

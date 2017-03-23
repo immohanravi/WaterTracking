@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lytPattern"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/customer_item_selector">
+
+
+<LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginTop="3dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/customerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="16dp"
+            android:text="Name:"
+            android:textColor="#000"
+            android:textSize="23dp"
+            android:textStyle="bold" />
+
+     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/dot"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:layout_marginTop="3dp"
+        android:orientation="vertical"
+        android:paddingRight="3dp"
+        android:layout_toRightOf="@+id/lytPatternText"
+        android:layout_toEndOf="@+id/lytPatternText">
+
+
+        <ImageView
+            android:id="@+id/dotImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/dot" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytPatternColor"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/topLayout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
+
+        <ImageView
+            android:id="@+id/customerImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytPatternText"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_below="@+id/topLayout"
+        android:layout_toLeftOf="@+id/lytGrab"
+        android:layout_toRightOf="@+id/lytPatternColor"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:id="@+id/txtNnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="TextView"
+            android:textColor="#000"
+            android:textSize="16sp" />
+
+
+        <TextView
+            android:id="@+id/txtNaddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="8dp"
+            android:text="TextView"
+            android:textColor="#666"
+            android:textSize="14sp" />
+        <TextView
+            android:id="@+id/txtNpendingAmt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="8dp"
+            android:textStyle="bold"
+            android:text="Pending Amount:"
+            android:textColor="#000"
+            android:textSize="17sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytGrab"
+        android:layout_width="wrap_content"
+        android:layout_height="72dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/topLayout"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingRight="16dp">
+
+
+        <ImageView
+            android:id="@+id/imageViewGrab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_drag_drop" />
+    </LinearLayout>
+
+</RelativeLayout>

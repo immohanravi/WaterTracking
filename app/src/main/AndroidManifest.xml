@@ -10,9 +10,9 @@
         android:hardwareAccelerated="false"
         android:icon="@drawable/images"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:largeHeap="true">
+        android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,8 +46,9 @@
                 android:value="net.robot_inc.watertracking.MainActivity" />
         </activity>
         <activity android:name=".updateRecords" />
-        <activity android:name=".addRecord"></activity>
-        <activity android:name=".about"></activity>
+        <activity android:name=".addRecord" />
+        <activity android:name=".about" />
+        <activity android:name=".dragdrop"></activity>
     </application>
 
 </manifest>
