@@ -11,12 +11,14 @@ public class Data {
     public String name;
     public String number;
     public String address;
-    public Data(Bitmap image,String id,String name, String number, String address) {
+    public int pendingAmount;
+    public Data(Bitmap image,String id,String name, String number, String address,int pendingAmount) {
         this.image = image;
         this.id = id;
         this.name = name;
         this.number = number;
         this.address = address;
+        this.pendingAmount = pendingAmount;
 
     }
 }

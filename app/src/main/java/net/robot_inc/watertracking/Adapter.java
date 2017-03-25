@@ -1,13 +1,18 @@
 package net.robot_inc.watertracking;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -15,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -31,7 +37,9 @@ import java.util.Map;
 public class Adapter extends ArrayAdapter<Data> {
     ImageView menuImage;
     final int INVALID_ID = -1;
+
     Bundle values;
+    View view;
     public interface Listener {
         void onGrab(int position, RelativeLayout row);
     }
@@ -45,19 +53,21 @@ public class Adapter extends ArrayAdapter<Data> {
         for (int i = 0; i < list.size(); ++i) {
             mIdMap.put(list.get(i), i);
         }
+
     }
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
+
+
         final Context context = getContext();
         final Data data = getItem(position);
         if(null == view) {
-            view = LayoutInflater.from(context).inflate(R.layout.list_row, null);
+            view = LayoutInflater.from(context).inflate(R.layout.customer_view, null);
         }
 
         final RelativeLayout row = (RelativeLayout) view.findViewById(
                 R.id.lytPattern);
-
 
         TextView textView = (TextView)view.findViewById(R.id.customerName);
         textView.setText(data.name);
@@ -66,6 +76,9 @@ public class Adapter extends ArrayAdapter<Data> {
         timerange.setText(data.number);
         TextView address = (TextView)view.findViewById(R.id.txtNaddress);
         address.setText(data.address);
+        TextView amt = (TextView)view.findViewById(R.id.txtNpendingAmt);
+        amt.setText("Pending Amount = "+data.pendingAmount);
+
 
         ImageView image = (ImageView) view.findViewById(R.id.customerImage);
         image.setImageBitmap(data.image);
@@ -74,6 +87,7 @@ public class Adapter extends ArrayAdapter<Data> {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     listener.onGrab(position, row);
+
                     return false;
                 }
             });
@@ -114,7 +128,11 @@ public class Adapter extends ArrayAdapter<Data> {
 
                                         return true;
                                     }
+                                    case R.id.delete:{
+                                        deleteRow();
+                                        return true;
 
+                                    }
 
                                     case R.id.call: {
                                         Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + values.getString("number")));
@@ -131,6 +149,34 @@ public class Adapter extends ArrayAdapter<Data> {
                         });
                     }
                 });
+
+
+        view.findViewById( R.id.lytPatternText)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        values = new Bundle();
+                        Bitmap bitmap = data.image;
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        byte[] bitmapdata = stream.toByteArray();
+                        values.putString("id", data.id);
+                        values.putString("name", data.name.replaceAll(" ", ""));
+                        values.putString("realname", data.name);
+                        values.putString("address", data.address);
+                        values.putString("number", data.number);
+                        values.putByteArray("image", bitmapdata);
+
+                        try {
+                            Intent intent = new Intent(getContext(), viewModifyRecords.class);
+                            intent.putExtras(values);
+                            getContext().startActivity(intent);
+                        } catch (Exception e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
         return view;
     }
 
@@ -142,7 +188,40 @@ public class Adapter extends ArrayAdapter<Data> {
         Data item = getItem(position);
         return mIdMap.get(item);
     }
+    public void deleteRow() {
 
+        final AlertDialog.Builder alert_box = new AlertDialog.Builder(getContext());
+        alert_box.setMessage("Are you Sure, Do you want to Remove this customer from list?\nAll the records with be deleted.");
+        alert_box.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dia, int which) {
+                try {
+                    customerDbHelper SQLITEHELPER = new customerDbHelper(getContext());
+                    SQLiteDatabase SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+                    SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='" + values.getString("id") + "'");
+                    customerDataHelper customerDataHelper = new customerDataHelper(getContext());
+                    customerDataHelper.dropTable(values.getString("name").toLowerCase().replaceAll(" ", ""));
+                    notifyDataSetChanged();
+
+                    Toast.makeText(getContext(), "Successfully Deleted the data", Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
+        alert_box.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dia, int which) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+        alert_box.show();
+    }
     @Override
     public boolean hasStableIds() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;

@@ -5,16 +5,21 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -26,11 +31,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -39,116 +47,48 @@ import static android.app.Activity.RESULT_OK;
  */
 public class tab2 extends Fragment {
 
-    Button loadImage, cancelBtn;
-    HashMap<String, Integer> pendingAmount = new HashMap<>();
-    Bundle values;
-    Intent intent;
-    long start = 0;
-    long end = 0;
-    ImageView iv, arrow;
-    private static int RESULT_LOAD_IMAGE = 1;
-    SQLiteDatabase SQLITEDATABASE;
-    String customerName = "";
-    customerDbHelper SQLITEHELPER;
-    customerDataHelper customerDataHelper;
-    Spinner spinner3;
-    Cursor cursor;
-    customerDbAdapter ListAdapter;
-    ListView listView;
-    EditText cancelInput;
-    ArrayList<String> ID_ArrayList = new ArrayList<String>();
-    ArrayList<String> Name_ArrayList = new ArrayList<String>();
-    ArrayList<String> Number_ArrayList = new ArrayList<String>();
-    ArrayList<byte[]> Image_ArrayList = new ArrayList<byte[]>();
-    ArrayList<String> Address_ArrayList = new ArrayList<String>();
-    ArrayList<Bitmap> imageList = new ArrayList<>();
+
+
+    Drawable defaultImg;
+    Button cancelBtn;
+    EditText filterEdit;
+    CustomListView listView;
+    Adapter adapter;
+    List<Data> list;
+    HashMap<String, ArrayList<String>> map;
+    ArrayList<String> values;
+    Map<String, byte[]> imageList;
+    Map<String, Integer> pendingAmount;
+    Parcelable savingState;
+    SharedPreferences customerCustomPosition;
+    SharedPreferences.Editor edit;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_tab2, container, false);
-
-        // Creating adapter for spinner
-               /*
-        iv = (ImageView) view.findViewById(R.id.imageView2);
-        iv = (ImageView) view.findViewById(R.id.imageView2);
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(
-                        Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                startActivityForResult(i, RESULT_LOAD_IMAGE);
-            }
-        });
-        */
-        listView = (ListView) view.findViewById(R.id.customer_list);
-
-        listView.setTextFilterEnabled(true);
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-              Bundle values = new Bundle();
-                values.putString("id",ListAdapter.getId(position));
-                values.putString("name",ListAdapter.getName(position));
-                values.putString("address",ListAdapter.getAddress(position));
-                values.putString("number",ListAdapter.getNumber(position));
-                values.putByteArray("image",ListAdapter.Image.get(position));
-                Intent intent = new Intent(getActivity(),customerDetails.class);
-                intent.putExtras(values);
-                startActivity(intent);
-
-            }
-        });*/
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                customerName = ListAdapter.getName(position);
-                values = new Bundle();
-                values.putString("id", ListAdapter.getId(position));
-                values.putString("name", ListAdapter.getName(position).replaceAll(" ", ""));
-                values.putString("realname", ListAdapter.getName(position));
-                values.putString("address", ListAdapter.getAddress(position));
-                values.putString("number", ListAdapter.getNumber(position));
-                values.putByteArray("image", Image_ArrayList.get(position));
-
-                return false;
-            }
-        });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                customerName = ListAdapter.getName(position);
-                values = new Bundle();
-                values.putString("id", ListAdapter.getId(position));
-                values.putString("name", ListAdapter.getName(position).replaceAll(" ", ""));
-                values.putString("realname", ListAdapter.getName(position));
-                values.putString("address", ListAdapter.getAddress(position));
-                values.putString("number", ListAdapter.getNumber(position));
-                values.putByteArray("image", Image_ArrayList.get(position));
-                try {
-                    Intent intent = new Intent(getActivity(), viewModifyRecords.class);
-                    intent.putExtras(values);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        registerForContextMenu(listView);
-        SQLITEHELPER = new customerDbHelper(getActivity());
-
+        list = new ArrayList<>();
+        listView = (CustomListView) view.findViewById(R.id.listView1);
+        customerCustomPosition = getActivity().getSharedPreferences("customersList", getActivity().MODE_PRIVATE);
+        edit = customerCustomPosition.edit();
         ShowSQLiteDBdata();
-        cancelInput = (EditText) view.findViewById(R.id.searchcustomer);
-        cancelInput.addTextChangedListener(new TextWatcher() {
+        filterEdit = (EditText) view.findViewById(R.id.searchcustomer);
+        filterEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                if (TextUtils.isEmpty(filterEdit.getText().toString())) {
+                    edit.clear();
+                    for (int a = 0; a < listView.getAdapter().getCount(); a++) {
 
+                        edit.putString(String.valueOf(a), ((Data) listView.getAdapter().getItem(a)).id);
+                        Log.i(String.valueOf(a), ((Data) listView.getAdapter().getItem(a)).id);
+                        edit.commit();
+                    }
+                }
             }
 
             @Override
@@ -158,6 +98,9 @@ public class tab2 extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(String.valueOf(s))) {
+                    ShowSQLiteDBdata();
+                }
 
             }
         });
@@ -165,7 +108,8 @@ public class tab2 extends Fragment {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelInput.setText("");
+                filterEdit.setText("");
+                ShowSQLiteDBdata();
             }
         });
         return view;
@@ -178,167 +122,75 @@ public class tab2 extends Fragment {
         super.onResume();
 
         ShowSQLiteDBdata();
-        cancelInput.setText("");
+        filterEdit.setText("");
 
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-
-            iv.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-
-        }
-
-
-    }
 
     private void ShowSQLiteDBdata() {
+        SQLiteDatabase SQLITEDATABASE;
+        customerDbHelper SQLITEHELPER;
+        SQLITEHELPER = new customerDbHelper(getContext());
+        Cursor cursor;
 
         SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
 
 
         cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers", null);
+        map = new HashMap<>();
+        values = new ArrayList<>();
+        imageList = new HashMap<>();
 
-
-        ID_ArrayList.clear();
-        Name_ArrayList.clear();
-        Number_ArrayList.clear();
-        Address_ArrayList.clear();
-        Image_ArrayList.clear();
 
         if (cursor.moveToFirst()) {
             do {
-                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)));
+                values.clear();
 
-                Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+                values.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
 
-                Address_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
 
-                Number_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
+                values.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
+                values.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
 
-                Image_ArrayList.add(cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
-
+                imageList.put(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)), cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
+                map.put(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)), (ArrayList<String>) values.clone());
             } while (cursor.moveToNext());
         }
-        getBitmap();
         setPendingAmount();
-        ListAdapter = new customerDbAdapter(getActivity(),
+        setList();
+        Log.i("changed", "");
+        adapter = new Adapter(getContext(), list, new Adapter.Listener() {
+            @Override
+            public void onGrab(int position, RelativeLayout row) {
 
-                ID_ArrayList,
-                Name_ArrayList,
-                Address_ArrayList,
-                Number_ArrayList,
-                imageList,
-                pendingAmount
+                listView.onGrab(position, row);
+            }
+        });
 
-        );
+        listView.setAdapter(adapter);
+        listView.setListener(new CustomListView.Listener() {
+            @Override
+            public void swapElements(int indexOne, int indexTwo) {
+                Data temp = list.get(indexOne);
+                list.set(indexOne, list.get(indexTwo));
+                list.set(indexTwo, temp);
 
-        listView.setAdapter(ListAdapter);
-
+            }
+        });
         cursor.close();
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        MenuInflater inflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.customer_context_menu, menu);
 
 
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.viewEdit: {
-                try {
-                    Intent intent = new Intent(getActivity(), customerDetails.class);
-                    intent.putExtras(values);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-
-
-                return true;
-            }
-
-
-            case R.id.call: {
-                Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + values.getString("number")));
-                startActivityForResult(callIntent, 1);
-                return true;
-            }
-            case R.id.delete: {
-                deleteRow();
-                return true;
-            }
-            default:
-                return false;
-        }
-    }
-
-
-    public void deleteRow() {
-        AlertDialog.Builder alert_box = new AlertDialog.Builder(getContext());
-        alert_box.setMessage("Are you Sure, Do you want to Remove this customer from list?\nAll the records with be deleted.");
-        alert_box.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dia, int which) {
-                try {
-                    SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
-                    SQLITEDATABASE.execSQL("DELETE FROM customers WHERE id='" + values.getString("id") + "'");
-                    customerDataHelper = new customerDataHelper(getContext());
-                    customerDataHelper.dropTable(values.getString("name").toLowerCase().replaceAll(" ", ""));
-
-                    ShowSQLiteDBdata();
-                    Toast.makeText(getContext(), "Successfully Deleted the data", Toast.LENGTH_SHORT).show();
-
-                } catch (Exception e) {
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
-        alert_box.setNegativeButton("No", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dia, int which) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-        alert_box.show();
-    }
-
-    public void getBitmap() {
-        imageList.clear();
-        for (byte[] imageByte : Image_ArrayList) {
-            imageList.add(BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length));
-        }
-    }
 
     public void setPendingAmount() {
+        pendingAmount = new HashMap<>();
         try {
-            for (String name : Name_ArrayList) {
-                customerDataHelper = new customerDataHelper(getContext());
-                pendingAmount.put(name, customerDataHelper.getPendingAmount(name.replaceAll(" ", "")));
+            for (String id : map.keySet()) {
+                customerDataHelper customerDataHelper = new customerDataHelper(getContext());
+                pendingAmount.put(id, customerDataHelper.getPendingAmount(map.get(id).get(0).replaceAll(" ", "")));
+                Log.i("pending amount", String.valueOf(pendingAmount.get(id)));
             }
         } catch (Exception e) {
             Toast.makeText(getContext(), "tab 2 \n" + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -346,12 +198,59 @@ public class tab2 extends Fragment {
 
 
     }
+    private void setList() {
+        list.clear();
+        ArrayList<String> addedIds = new ArrayList<>();
 
-    public void filterCustomerDatabase(String filterText) {
-        SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+        for (int a = 0; a < map.size(); a++) {
+
+            if (customerCustomPosition.getString(String.valueOf(a), "") != "") {
+
+                String id = customerCustomPosition.getString(String.valueOf(a), "");
+                if (map.containsKey(id)) {
+                    addedIds.add(id);
+                    list.add(new Data(getImage(imageList.get(id)), id, map.get(id).get(0), map.get(id).get(1), map.get(id).get(2), pendingAmount.get(id)));
+                } else {
+                    edit.remove(String.valueOf(a));
+                }
+            }
+
+        }
+
+        for (String id : map.keySet()) {
+            if (!addedIds.contains(id)) {
+                list.add(new Data(getImage(imageList.get(id)), id, map.get(id).get(0), map.get(id).get(1), map.get(id).get(2), pendingAmount.get(id)));
+
+            }
+        }
+
+    }
+
+    private void setListBySearch() {
+        list.clear();
+
+        for (String id : map.keySet()) {
+            list.add(new Data(getImage(imageList.get(id)), id, map.get(id).get(0), map.get(id).get(1), map.get(id).get(2), pendingAmount.get(id)));
+
+        }
+
+
+    }
+
+    private Bitmap getImage(byte[] imageByte) {
+        return BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+    }
+
+    private void filterCustomerDatabase(String filterText) {
         int position = 0;
+        SQLiteDatabase SQLITEDATABASE;
+        customerDbHelper SQLITEHELPER;
+        SQLITEHELPER = new customerDbHelper(getContext());
+        SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
         Cursor cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers", null);
-        ;
+
+        SQLITEDATABASE = SQLITEHELPER.getWritableDatabase();
+
         try {
             Long x = Long.parseLong(filterText);
             position = 2;
@@ -365,44 +264,84 @@ public class tab2 extends Fragment {
             cursor = SQLITEDATABASE.rawQuery("SELECT * FROM customers WHERE Number  LIKE \'%" + filterText + "%\'", null);
         }
 
-        ID_ArrayList.clear();
-        Name_ArrayList.clear();
-        Number_ArrayList.clear();
-        Address_ArrayList.clear();
-        Image_ArrayList.clear();
+        map = new HashMap<>();
+        values = new ArrayList<>();
+        imageList = new HashMap<>();
+
 
         if (cursor.moveToFirst()) {
             do {
-                ID_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)));
+                values.clear();
 
-                Name_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
+                values.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Name)));
 
-                Address_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
 
-                Number_ArrayList.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
+                values.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Number)));
+                values.add(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_Address)));
 
-                Image_ArrayList.add(cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
-
+                imageList.put(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)), cursor.getBlob(cursor.getColumnIndex(customerDbHelper.KEY_Image)));
+                map.put(cursor.getString(cursor.getColumnIndex(customerDbHelper.KEY_ID)), (ArrayList<String>) values.clone());
             } while (cursor.moveToNext());
         }
-        getBitmap();
+
         setPendingAmount();
-        ListAdapter = new customerDbAdapter(getActivity(),
+        setListBySearch();
+        adapter = new Adapter(getContext(), list, new Adapter.Listener() {
+            @Override
+            public void onGrab(int position, RelativeLayout row) {
 
-                ID_ArrayList,
-                Name_ArrayList,
-                Address_ArrayList,
-                Number_ArrayList,
-                imageList,
-                pendingAmount
+                listView.onGrab(position, row);
+            }
+        });
 
-        );
+        listView.setAdapter(adapter);
+        listView.setListener(new CustomListView.Listener() {
+            @Override
+            public void swapElements(int indexOne, int indexTwo) {
+                Data temp = list.get(indexOne);
+                list.set(indexOne, list.get(indexTwo));
+                list.set(indexTwo, temp);
 
-        listView.setAdapter(ListAdapter);
-
+            }
+        });
         cursor.close();
-        SQLITEDATABASE.close();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (TextUtils.isEmpty(filterEdit.getText().toString())) {
+            edit.clear();
+            for (int a = 0; a < listView.getAdapter().getCount(); a++) {
+
+                edit.putString(String.valueOf(a), ((Data) listView.getAdapter().getItem(a)).id);
+                Log.i(String.valueOf(a), ((Data) listView.getAdapter().getItem(a)).id);
+                edit.commit();
+            }
+        }
 
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (TextUtils.isEmpty(filterEdit.getText().toString())) {
+            edit.clear();
+            for (int a = 0; a < listView.getAdapter().getCount(); a++) {
+
+                edit.putString(String.valueOf(a), ((Data) listView.getAdapter().getItem(a)).id);
+                Log.i(String.valueOf(a), ((Data) listView.getAdapter().getItem(a)).id);
+                edit.commit();
+            }
+        }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ShowSQLiteDBdata();
+    }
+
 
 }

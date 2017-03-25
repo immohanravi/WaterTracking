@@ -5,16 +5,18 @@
     android:layout_height="match_parent"
     tools:context=".tab2">
 
-    <!-- TODO: Update blank fragment layout -->
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/searchlayout">
+        android:id="@+id/drapL"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/searchlayout">
 
             <EditText
                 android:layout_width="match_parent"
@@ -27,35 +29,36 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="4dp"
 
-                android:background="@drawable/rounder_edittext"/>
+                android:background="@drawable/rounder_edittext" />
 
-           <ListView
-           android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/customer_list"
-            android:listSelector="@drawable/customer_item_selector"
-            android:layout_marginTop="8dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:smoothScrollbar="true"
-            android:scrollingCache="false"
-            android:animationCache="false"/>
-    </LinearLayout>
+            <net.robot_inc.watertracking.CustomListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/listView1"
+                android:listSelector="@drawable/customer_item_selector"
+                android:layout_marginTop="8dp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:smoothScrollbar="true"
+                android:scrollingCache="false"
+                android:animationCache="false" />
+        </LinearLayout>
 
-    <Button
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:paddingRight="15dp"
-        android:layout_marginRight="16dp"
-        android:id="@+id/cancelBtn"
-        android:background="@drawable/cancel"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="17dp" />
-</RelativeLayout>
+        <Button
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingRight="15dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/cancelBtn"
+            android:background="@drawable/cancel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="17dp" />
+    </RelativeLayout>
+
 
 
 </FrameLayout>

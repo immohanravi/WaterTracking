@@ -14,6 +14,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -233,6 +234,7 @@ public class CustomListView extends ListView {
     public boolean onTouchEvent (MotionEvent event) {
 
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
+
             case MotionEvent.ACTION_DOWN:
                 mDownX = (int)event.getX();
                 mDownY = (int)event.getY();
@@ -303,6 +305,7 @@ public class CustomListView extends ListView {
                             mHoverCellOriginalBounds.top + deltaY + mTotalOffset);
                     mHoverCell.setBounds(mHoverCellCurrentBounds);
                     invalidate();
+                    Log.i("position changed","");
 
                     if(enableY) {
                         hovoerTrashbox(false);
@@ -333,10 +336,14 @@ public class CustomListView extends ListView {
 
                     // Reaching to the left
                     touchEventsEnded();
+                    Log.i("changed","");
                 }
                 else {
                     touchEventsEnded();
+                    Log.i("changed","");
                 }
+
+
             }
             break;
             case MotionEvent.ACTION_CANCEL:
@@ -392,7 +399,7 @@ public class CustomListView extends ListView {
 
             if(null != switchView) {
                 selectedView = (RelativeLayout)switchView.findViewById(
-                        R.id.rview);
+                        R.id.lytPattern);
             }
 
             final int originalItem = getPositionForView(mobileView);
@@ -405,6 +412,7 @@ public class CustomListView extends ListView {
             listener.swapElements(originalItem, getPositionForView(switchView));
 
             ((BaseAdapter) getAdapter()).notifyDataSetChanged();
+
 
             mDownY = mLastEventY;
 
@@ -437,6 +445,9 @@ public class CustomListView extends ListView {
                     return true;
                 }
             });
+
+
+
         }
     }
 
@@ -471,6 +482,8 @@ public class CustomListView extends ListView {
                 @Override
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     invalidate();
+                    Log.i("position changed","");
+
                 }
             });
             hoverViewAnimator.addListener(new AnimatorListenerAdapter() {
@@ -488,6 +501,7 @@ public class CustomListView extends ListView {
                     mHoverCell = null;
                     setEnabled(true);
                     invalidate();
+
                 }
             });
             hoverViewAnimator.start();

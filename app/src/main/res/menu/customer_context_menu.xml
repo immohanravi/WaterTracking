@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/viewEdit"
-        android:title="View/Edit"/>
+        app:showAsAction="ifRoom|withText"
+        android:title="View/Edit"
+        android:visible="true"/>
 
       <item android:id="@+id/call"
-        android:title="Call Customer"/>
+          app:showAsAction="ifRoom|withText"
+        android:title="Call Customer"
+          android:visible="true"/>
    
     <item android:id="@+id/delete"
-        android:title="Delete Customer"/>
+        app:showAsAction="ifRoom|withText"
+        android:title="Delete Customer"
+        android:visible="true"/>
 
-    <item android:id="@+id/sort"
-        android:title="Sort"/>
-</menu>
+    </menu>
